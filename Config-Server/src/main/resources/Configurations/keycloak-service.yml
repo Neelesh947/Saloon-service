@@ -1,0 +1,14 @@
+server:
+  port: 8106
+
+keycloak:
+  resource: application
+  credentials:
+    secrets:
+      Saloon: 4PMMvFtFuY7PpLdHB2hZQxYloIwlrYYG
+  token-url: http://localhost:8080/realms/{0}/protocol/openid-connect/token
+  admin-client: admin-cli
+  admin-credentials: 
+    username: neelesh
+    password: neelesh
+  user-name-url:   

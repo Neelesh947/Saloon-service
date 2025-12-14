@@ -1,0 +1,18 @@
+server:
+  port: 8101
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: keycloak-service
+          uri: lb:http://KEYCLOAK-SERVICE
+          predicates:
+            - Path=/{realm}/keycloak/**
+        - id: 
+          uri: 
+          predicates:
+            - Path=

@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: keycloak-service
+  config:
+    import: optional:configserver:http://localhost:8888
