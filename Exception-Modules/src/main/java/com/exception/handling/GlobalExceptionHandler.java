@@ -27,7 +27,9 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ValidationException.class)
 	public ResponseEntity<ApiErrorResponse> handleValidation(ValidationException ex, HttpServletRequest req) {
-		return buildResponse(ex.getMessage(), ExceptionCodes.VALIDATION_ERROR_MSG, HttpStatus.BAD_REQUEST, req);
+		HttpStatus status = ex.getMessage().toLowerCase().contains("already exists") ? HttpStatus.CONFLICT
+				: HttpStatus.BAD_REQUEST;
+		return buildResponse(ex.getMessage(), ExceptionCodes.VALIDATION_ERROR_MSG, status, req);
 	}
 
 	@ExceptionHandler(BusinessException.class)

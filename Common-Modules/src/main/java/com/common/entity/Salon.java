@@ -20,6 +20,8 @@ public class Salon extends BaseEntity {
 	private String saloonName;
 
 	private String address;
+	
+	private String createdBy;
 
 	private String phone;
 

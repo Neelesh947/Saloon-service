@@ -18,23 +18,23 @@ services:
       - backend
     restart: unless-stopped  
 
-  # MySQL (main DB for shopping service)
+  # MySQL (main DB for Service-catalog service)
   # Uncomment if needed
-  # mysql:
-  #   image: mysql:8.0
-  #   container_name: mysql
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: neelesh
-  #     MYSQL_DATABASE: mydb
-  #     MYSQL_USER: neelesh
-  #     MYSQL_PASSWORD: neelesh
-  #   volumes:
-  #     - mysql:/var/lib/mysql   
-  #   ports:
-  #     - "3307:3306"
-  #   networks:
-  #     - backend
-  #   restart: unless-stopped
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: neelesh
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: neelesh
+      MYSQL_PASSWORD: neelesh
+    volumes:
+      - mysql:/var/lib/mysql   
+    ports:
+      - "3307:3306"
+    networks:
+      - backend
+    restart: unless-stopped
 
   # MySQL (for payment service)
   # mysql-payment:

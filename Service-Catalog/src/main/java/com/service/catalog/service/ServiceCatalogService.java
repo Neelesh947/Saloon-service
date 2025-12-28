@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.common.dto.CreateServiceDTO;
-import com.common.dto.SaloonServiceDto;
+import com.common.dto.SaloonServiceDTO;
 import com.common.dto.UpdateServiceDTO;
 import com.common.entity.Salon;
 import com.common.entity.SaloonService;
@@ -24,7 +24,7 @@ public class ServiceCatalogService {
 	private final SaloonServiceRepository saloonServiceRepository;
 	private final SaloonRepository saloonRepository;
 
-	public SaloonServiceDto createService(CreateServiceDTO createServiceDTO, UUID salonId) {
+	public SaloonServiceDTO createService(CreateServiceDTO createServiceDTO, UUID salonId) {
 		Salon salon = saloonRepository.findById(salonId).orElseThrow(() -> new ValidationException("Salon not found"));
 		SaloonService service = new SaloonService();
 		service.setName(createServiceDTO.getName());
@@ -37,22 +37,22 @@ public class ServiceCatalogService {
 		return convertToDto(saloonServiceRepository.save(service));
 	}
 
-	public List<SaloonServiceDto> getAllServices() {
+	public List<SaloonServiceDTO> getAllServices() {
 		return saloonServiceRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
 	}
 
-	public SaloonServiceDto getServiceById(UUID serviceId) {
+	public SaloonServiceDTO getServiceById(UUID serviceId) {
 		SaloonService service = saloonServiceRepository.findById(serviceId)
 				.orElseThrow(() -> new ValidationException("Service not found"));
 		return convertToDto(service);
 	}
 
-	public List<SaloonServiceDto> getServicesBySalon(UUID salonId) {
+	public List<SaloonServiceDTO> getServicesBySalon(UUID salonId) {
 		Salon salon = saloonRepository.findById(salonId).orElseThrow(() -> new ValidationException("Salon not found"));
 		return salon.getServices().stream().map(this::convertToDto).collect(Collectors.toList());
 	}
 
-	public SaloonServiceDto updateService(UUID serviceId, UpdateServiceDTO updateDTO) {
+	public SaloonServiceDTO updateService(UUID serviceId, UpdateServiceDTO updateDTO) {
 		SaloonService service = saloonServiceRepository.findById(serviceId)
 				.orElseThrow(() -> new ValidationException("Service not found"));
 
@@ -84,8 +84,8 @@ public class ServiceCatalogService {
 		saloonServiceRepository.delete(service);
 	}
 
-	private SaloonServiceDto convertToDto(SaloonService saloonService) {
-		return new SaloonServiceDto(saloonService.getId(), saloonService.getName(), saloonService.getDescription(),
+	private SaloonServiceDTO convertToDto(SaloonService saloonService) {
+		return new SaloonServiceDTO(saloonService.getId(), saloonService.getName(), saloonService.getDescription(),
 				saloonService.getCategory(), saloonService.getDurationInMinutes(), saloonService.getPrice(),
 				saloonService.getActive(), saloonService.getSalon() != null ? saloonService.getSalon().getId() : null,
 				saloonService.getSalon() != null ? saloonService.getSalon().getSaloonName() : null);

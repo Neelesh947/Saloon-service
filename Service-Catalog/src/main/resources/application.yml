@@ -1,5 +1,5 @@
 spring:
   application:
-    name: Serivce-Catalog
+    name: Service-Catalog
   config:
     import: optional:configserver:http://localhost:8888

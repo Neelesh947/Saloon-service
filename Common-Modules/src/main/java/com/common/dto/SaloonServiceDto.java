@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SaloonServiceDto {
+public class SaloonServiceDTO {
 
 	private UUID id;
     private String name;

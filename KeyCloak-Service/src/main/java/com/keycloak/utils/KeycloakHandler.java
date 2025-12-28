@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.apache.hc.core5.http.NameValuePair;
@@ -59,16 +58,16 @@ public class KeycloakHandler {
 		return responseDto;
 	};
 
-	private final Supplier<TokenResponseDto> accessTokenAdminCli = () -> {
-		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), Constants.MASTER_REALM);
-		List<NameValuePair> body = Stream.<NameValuePair>of(
-				new BasicNameValuePair(Constants.GRANT_TYPE, Constants.PASSWORD),
-				new BasicNameValuePair(Constants.CLIENT_ID, keycloakProperties.getAdminClient()),
-				new BasicNameValuePair(Constants.USERNAME, keycloakProperties.getAdminCredentials().getUsername()),
-				new BasicNameValuePair(Constants.PASSWORD, keycloakProperties.getAdminCredentials().getPassword()))
-				.toList();
-		return accesstoken.apply(url, body);
-	};
+//	private final Supplier<TokenResponseDto> accessTokenAdminCli = () -> {
+//		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), Constants.MASTER_REALM);
+//		List<NameValuePair> body = Stream.<NameValuePair>of(
+//				new BasicNameValuePair(Constants.GRANT_TYPE, Constants.PASSWORD),
+//				new BasicNameValuePair(Constants.CLIENT_ID, keycloakProperties.getAdminClient()),
+//				new BasicNameValuePair(Constants.USERNAME, keycloakProperties.getAdminCredentials().getUsername()),
+//				new BasicNameValuePair(Constants.PASSWORD, keycloakProperties.getAdminCredentials().getPassword()))
+//				.toList();
+//		return accesstoken.apply(url, body);
+//	};
 
 	public final BiFunction<LoginDto, String, TokenResponseDto> userAccessToken = (credentials, realm) -> {
 		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), realm);

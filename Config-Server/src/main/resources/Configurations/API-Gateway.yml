@@ -4,15 +4,17 @@ server:
 spring:
   cloud:
     gateway:
+      server:
+        webflux: {}  # keep it empty if no specific settings
       discovery:
         locator:
           enabled: true
       routes:
         - id: keycloak-service
-          uri: lb:http://KEYCLOAK-SERVICE
+          uri: lb://KEYCLOAK-SERVICE
           predicates:
             - Path=/{realm}/keycloak/**
-        - id: 
-          uri: 
+        - id: Service-Catalog
+          uri: lb://SERVICE-CATALOG
           predicates:
-            - Path=
+            - Path=/{realm}/Saloons/**
