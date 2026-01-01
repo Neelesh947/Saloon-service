@@ -1,6 +1,5 @@
 package com.service.catalog.controller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
