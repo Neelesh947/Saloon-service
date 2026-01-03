@@ -1,1 +1,96 @@
-<p>analytics-dashboard-super-admin works!</p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Saloon-List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<div class="container-fluid p-4">
+  <h1 class="mb-4 text-primary">Analytics Dashboard</h1>
+
+  <!-- Metrics Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-md-4 col-lg-2" *ngFor="let metric of [
+      {id:'totalUsers', icon:'bi-people-fill', label:'Total Users', color:'primary'},
+      {id:'activeUsers', icon:'bi-person-check-fill', label:'Active Users', color:'success'},
+      {id:'newUsers', icon:'bi-person-plus-fill', label:'New Users', color:'info'},
+      {id:'totalSaloons', icon:'bi-building', label:'Total Saloons', color:'warning'},
+      {id:'activeSaloons', icon:'bi-building-check', label:'Active Saloons', color:'success'},
+      {id:'pendingApprovals', icon:'bi-clock-history', label:'Pending Approvals', color:'danger'}
+    ]">
+      <div class="card p-3 text-center bg-white">
+        <div class="metric-icon text-{{metric.color}} mb-2"><i class="bi {{metric.icon}}"></i></div>
+        <div class="metric-value">{{metrics[metric.id] ?? 'N/A'}}</div>
+        <div class="metric-label">{{metric.label}}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-6">
+      <div class="card p-3 bg-white">
+        <h5>User Growth</h5>
+        <div class="chart-controls d-flex gap-2 flex-wrap mb-2">
+          <input #userStart type="date" class="form-control">
+          <input #userEnd type="date" class="form-control">
+          <button (click)="updateUserChart(userStart,userEnd)" class="btn btn-primary">Update</button>
+        </div>
+        <canvas baseChart
+          [data]="userChartData"
+          chartType="line"
+          [options]="{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}">
+        </canvas>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <div class="card p-3 bg-white">
+        <h5>Revenue Breakdown</h5>
+        <div class="chart-controls d-flex gap-2 flex-wrap mb-2">
+          <input #revStart type="date" class="form-control">
+          <input #revEnd type="date" class="form-control">
+          <button (click)="updateRevenueChart(revStart,revEnd)" class="btn btn-success">Update</button>
+        </div>
+        <canvas baseChart
+          [data]="revenueChartData"
+          chartType="bar"
+          [options]="{responsive:true, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:true}}}">
+        </canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Saloons Table -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card p-3 bg-white">
+        <h5>Top N Saloons by Revenue</h5>
+        <div class="chart-controls d-flex gap-2 mb-3">
+          <input #topNInput type="number" class="form-control w-auto" placeholder="Number of Saloons" [value]="topN">
+          <button (click)="updateTopSaloons(topNInput)" class="btn btn-info">Update Table</button>
+        </div>
+        <table class="table table-striped table-hover">
+          <thead class="table-light">
+            <tr><th>#</th><th>Name</th><th>Location</th><th>Revenue</th><th>Bookings</th></tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let salon of topSaloons; let i=index">
+              <td>{{i+1}}</td>
+              <td>{{salon.name ?? 'N/A'}}</td>
+              <td>{{salon.location ?? 'N/A'}}</td>
+              <td>{{salon.revenue ?? 'N/A'}}</td>
+              <td>{{salon.bookings ?? 'N/A'}}</td>
+            </tr>
+            <tr *ngIf="!topSaloons.length"><td colspan="5" class="text-center">No Data</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

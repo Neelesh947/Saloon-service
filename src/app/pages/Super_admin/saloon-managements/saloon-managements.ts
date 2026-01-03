@@ -6,12 +6,12 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-super-admin-dashboard',
-  imports: [CommonModule, FormsModule],
-  templateUrl: './super-admin-dashboard.html',
-  styleUrls: ['./super-admin-dashboard.scss'], // <-- fixed typo
+  selector: 'app-saloon-managements',
+  imports: [FormsModule, CommonModule],
+  templateUrl: './saloon-managements.html',
+  styleUrl: './saloon-managements.scss',
 })
-export class SuperAdminDashboard implements OnInit {
+export class SaloonManagements {
   saloons: SalonResponseDTO[] = [];
   pageInfo = {
     totalElements: 0,
