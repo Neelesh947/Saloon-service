@@ -27,11 +27,7 @@
       <!-- Filters -->
       <div class="row mb-3">
         <div class="col-md-4">
-          <input
-            type="text"
-            class="form-control"
-            placeholder="Search by Saloon Name..."
-          />
+          <input type="text" class="form-control" placeholder="Search by Saloon Name..." />
         </div>
 
         <div class="col-md-3">
@@ -75,10 +71,7 @@
               </td>
 
               <td>
-                <span
-                  class="badge"
-                  [ngClass]="saloon.active ? 'bg-success' : 'bg-danger'"
-                >
+                <span class="badge" [ngClass]="saloon.active ? 'bg-success' : 'bg-danger'">
                   {{ saloon.active ? 'Active' : 'Inactive' }}
                 </span>
               </td>
@@ -88,15 +81,18 @@
               </td>
 
               <td class="text-center">
-                <button class="btn btn-sm btn-outline-primary me-1">
+                <button class="btn btn-sm btn-outline-primary me-1" title="Edit User">
                   <i class="bi bi-eye"></i>
                 </button>
 
-                <button class="btn btn-sm btn-outline-warning me-1">
-                  <i class="bi bi-pencil"></i>
+                <button class="btn btn-sm me-1"
+                  [ngClass]="saloon.active ? 'btn-outline-warning' : 'btn-outline-success'"
+                  [title]="saloon.active ? 'Inactivate User' : 'Activate User'" (click)="dissableEnableUser(saloon)">
+                  <i class="bi" [ngClass]="saloon.active ? 'bi-slash-circle' : 'bi-check-circle'"></i>
                 </button>
 
-                <button class="btn btn-sm btn-outline-danger">
+
+                <button class="btn btn-sm btn-outline-danger" title="Delete User">
                   <i class="bi bi-slash-circle"></i>
                 </button>
               </td>

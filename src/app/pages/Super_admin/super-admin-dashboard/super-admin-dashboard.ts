@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SalonResponseDTO } from '../../../services/DTOs/salon-response-dto';
 import { SaloonServices } from '../../../services/saloon-service/saloon-services';
 import { FormsModule } from '@angular/forms';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-super-admin-dashboard',
@@ -21,7 +22,7 @@ export class SuperAdminDashboard implements OnInit {
   // Default filter is 'true' to show active saloons
   statusFilter: string = 'true';
 
-  constructor(private saloonService: SaloonServices) { }
+  constructor(private saloonService: SaloonServices, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.loadSaloons();
@@ -34,6 +35,7 @@ export class SuperAdminDashboard implements OnInit {
       next: (res: any) => {
         this.saloons = res.content;
         this.pageInfo = res.pageInfo;
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error fetching saloons', err);
@@ -51,5 +53,40 @@ export class SuperAdminDashboard implements OnInit {
   // Called when user changes the select dropdown
   onStatusChange(): void {
     this.loadSaloons();
+  }
+
+  dissableEnableUser(saloon: any) {
+
+    const newStatus = !saloon.active;
+    Swal.fire({
+      title: 'Are you sure?',
+      text: newStatus
+        ? `Do you want to activate ${saloon.saloonName}?`
+        : `Do you want to inactivate ${saloon.saloonName}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.saloonService.ActiveInactiveUsers(saloon.id, newStatus).subscribe({
+          next: () => {
+            saloon.active = newStatus;
+            Swal.fire(
+              newStatus ? 'Activated!' : 'Inactivated!',
+              `${saloon.saloonName} has been ${newStatus ? 'activated' : 'inactivated'
+              }.`,
+              'success'
+            );
+            window.location.reload();
+          },
+          error: (err) => {
+            console.error('Error updating saloon status:', err);
+            Swal.fire('Error', 'Failed to mark saloon inactive.', 'error');
+          }
+        });
+      }
+    });
   }
 }

@@ -46,4 +46,23 @@ export class TokenStorageService {
     const roles = sessionStorage.getItem(this.ROLES_KEY);
     return roles ? JSON.parse(roles) : [];
   }
+
+  getAccessToken(): string | null {
+    const loginData = sessionStorage.getItem(this.LOGIN_DATA_KEY);
+    if (!loginData) {
+      return null;
+    }
+
+    try {
+      const parsed = JSON.parse(loginData);
+      return parsed.access_token || null;
+    } catch (e) {
+      console.error('Failed to parse login data', e);
+      return null;
+    }
+  }
+
+  clear(): void {
+    sessionStorage.clear();
+  }
 }
