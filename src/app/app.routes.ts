@@ -24,6 +24,9 @@ import { StaffListAdmin } from './pages/Admin/staff-list-admin/staff-list-admin'
 import { AddStaffByAdmin } from './pages/Admin/add-staff-by-admin/add-staff-by-admin';
 import { EditEmployeeByAdmin } from './pages/Admin/edit-employee-by-admin/edit-employee-by-admin';
 import { AdminAnalytics } from './pages/Admin/admin-analytics/admin-analytics';
+import { AdminList } from './pages/Super_admin/admin-list/admin-list';
+import { CreateAdmin } from './pages/Super_admin/create-admin/create-admin';
+import { EditAdmin } from './pages/Super_admin/edit-admin/edit-admin';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
@@ -38,7 +41,10 @@ export const routes: Routes = [
             { path: 'super-admin-analytics', component: AnalyticsDashboardSuperAdmin },
             { path: 'user-management', component: UserManagementBySuperAdmin },
             { path: 'staff-management', component: StaffmanagementBySuperAdmin },
-            { path: 'serivce-management', component: ServiceManagementBySuperAdmin }
+            { path: 'serivce-management', component: ServiceManagementBySuperAdmin },
+            { path: 'admin-list', component: AdminList },
+            { path: 'add-admin', component: CreateAdmin },
+            { path: 'edit-admin', component: EditAdmin }
         ]
     },
     {
