@@ -47,9 +47,25 @@ export class EditSaloonSuperAdmin implements OnInit {
     })
   }
 
-  saveSaloon() { }
+  saveSaloon() {
+    if (!this.saloon.id) {
+      Swal.fire('Error', 'Saloon ID is missing!', 'error');
+      return;
+    }
+    this.saloon_service.updateSaloon(this.saloon.id, this.saloon).subscribe({
+      next: (res: SalonResponseDTO) => {
+        Swal.fire('Success', 'Saloon updated successfully!', 'success').then(() => {
+          this.router.navigate(['/super-admin-dashboard/saloon-management-admin']);
+        })
+      },
+      error: (err) => {
+        console.error(err);
+        Swal.fire('Error', 'Failed to update saloon. Please try again.', 'error');
+      }
+    })
+  }
 
-  cancel() { 
+  cancel() {
     this.router.navigate(['/super-admin-dashboard/saloon-management-admin']);
   }
 }

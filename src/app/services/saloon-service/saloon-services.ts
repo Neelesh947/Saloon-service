@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { SalonResponseDTO } from '../DTOs/salon-response-dto';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../auth-services/token-storage-services';
+import { SaloonRequestDTO } from '../DTOs/saloon-request-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -40,5 +41,15 @@ export class SaloonServices {
 
   getSaloonById(id: string): Observable<SalonResponseDTO> {
     return this.http.get<SalonResponseDTO>(`${this.baseUrl}/${id}`);
+  }
+
+  updateSaloon(saloonId: string, request: SaloonRequestDTO): Observable<SalonResponseDTO> {
+    const url = `${this.baseUrl}/${saloonId}`;
+    return this.http.put<SalonResponseDTO>(url, request, { headers: this.getAuthHeaders() });
+  }
+
+  createSaloon(request: SaloonRequestDTO): Observable<SalonResponseDTO> {
+    const url = `${this.baseUrl}/create`;
+    return this.http.post<SalonResponseDTO>(url, request, { headers: this.getAuthHeaders() });
   }
 }

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { SalonResponseDTO } from '../../../services/DTOs/salon-response-dto';
 import { SaloonServices } from '../../../services/saloon-service/saloon-services';
@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-saloon-managements',
-  imports: [FormsModule, CommonModule, RouterModule],
+  imports: [FormsModule, CommonModule, RouterModule, NgIf],
   templateUrl: './saloon-managements.html',
   styleUrl: './saloon-managements.scss',
 })
