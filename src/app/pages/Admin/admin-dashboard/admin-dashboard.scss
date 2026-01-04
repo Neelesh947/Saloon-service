@@ -1,0 +1,31 @@
+/* Root container takes full viewport height and uses flexbox */
+.layout {
+  display: flex;
+  height: 100vh;          /* Full viewport height */
+  overflow: hidden;       /* Prevent unwanted scrollbars */
+  font-family: Arial, sans-serif;
+}
+
+/* Sidebar/navbar fixed width, full height */
+app-navbar {
+  flex: 0 0 250px;        /* Fixed width: 250px */
+  background-color: #343a40; /* Match your sidebar bg color */
+  color: white;
+  overflow-y: auto;       /* Scroll sidebar if content is tall */
+  height: 100vh;
+  position: fixed;        /* Sidebar fixed so it stays on scroll */
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
+/* Main content takes the rest of the space */
+.content {
+  margin-left: 250px;     /* Leave space for fixed sidebar */
+  padding: 20px;
+  flex-grow: 1;           /* Fill remaining width */
+  overflow-y: auto;       /* Scroll main content if needed */
+  height: 100vh;          /* Full viewport height */
+  background-color: #f8f9fa; /* Light background */
+  box-sizing: border-box; /* Include padding in width calculations */
+}

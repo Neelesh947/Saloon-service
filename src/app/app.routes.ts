@@ -13,6 +13,17 @@ import { StaffmanagementBySuperAdmin } from './pages/Super_admin/staffmanagement
 import { ServiceManagementBySuperAdmin } from './pages/Super_admin/service-management-by-super-admin/service-management-by-super-admin';
 import { EditSaloonSuperAdmin } from './pages/Super_admin/edit-saloon-super-admin/edit-saloon-super-admin';
 import { AddSaloonSuperAdmin } from './pages/Super_admin/add-saloon-super-admin/add-saloon-super-admin';
+import { NavbarAdmin } from './pages/Admin/navbar-admin/navbar-admin';
+import { SaloonListAdmin } from './pages/Admin/saloon-list-admin/saloon-list-admin';
+import { EditSaloonByAdmin } from './pages/Admin/edit-saloon-by-admin/edit-saloon-by-admin';
+import { AddSaloonByAdmin } from './pages/Admin/add-saloon-by-admin/add-saloon-by-admin';
+import { ServiceListAdmin } from './pages/Admin/service-list-admin/service-list-admin';
+import { AddServiceListAdmin } from './pages/Admin/add-service-list-admin/add-service-list-admin';
+import { EditServiceListAdmin } from './pages/Admin/edit-service-list-admin/edit-service-list-admin';
+import { StaffListAdmin } from './pages/Admin/staff-list-admin/staff-list-admin';
+import { AddStaffByAdmin } from './pages/Admin/add-staff-by-admin/add-staff-by-admin';
+import { EditEmployeeByAdmin } from './pages/Admin/edit-employee-by-admin/edit-employee-by-admin';
+import { AdminAnalytics } from './pages/Admin/admin-analytics/admin-analytics';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
@@ -30,7 +41,22 @@ export const routes: Routes = [
             { path: 'serivce-management', component: ServiceManagementBySuperAdmin }
         ]
     },
-    { path: 'admin-dashboard', component: AdminDashboard },
+    {
+        path: 'admin-dashboard', component: AdminDashboard,
+        children: [
+            { path: '', component: NavbarAdmin },
+            { path: 'saloon-list-by-admin', component: SaloonListAdmin },
+            { path: 'edit-saloon-by-admin', component: EditSaloonByAdmin },
+            { path: 'add-saloon-by-admin', component: AddSaloonByAdmin },
+            { path: 'serivce-list-by-admin', component: ServiceListAdmin },
+            { path: 'add-service-list-by-admin', component: AddServiceListAdmin },
+            { path: 'edit-service-list-by-admin', component: EditServiceListAdmin },
+            { path: 'staf-list-by-admin', component: StaffListAdmin },
+            { path: 'add-staff-by-admin', component: AddStaffByAdmin },
+            { path: 'edit-staff-by-admin', component: EditEmployeeByAdmin },
+            { path: 'admin-dashboard-analytics', component: AdminAnalytics }
+        ]
+    },
     { path: 'staff-dashboard', component: StaffDashboard },
     { path: 'user-dashboard', component: UserDashboard },
 ];

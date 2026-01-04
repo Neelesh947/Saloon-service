@@ -5,6 +5,7 @@ import { SalonResponseDTO } from '../DTOs/salon-response-dto';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../auth-services/token-storage-services';
 import { SaloonRequestDTO } from '../DTOs/saloon-request-dto';
+import { PaginatedResponse } from '../DTOs/paginated-response';
 
 @Injectable({
   providedIn: 'root',
@@ -56,5 +57,16 @@ export class SaloonServices {
   deleteSaloon(saloonId: string): Observable<any> {
     const url = `${this.baseUrl}/${saloonId}`
     return this.http.delete(url, { headers: this.getAuthHeaders() });
+  }
+
+  getListOfLinkedSaloonWithTheUser(isEnabled?: boolean, page: number = 0, size: number = 10): Observable<PaginatedResponse<SalonResponseDTO>> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+
+    if (isEnabled !== undefined) {
+      params = params.set('isEnabled', isEnabled.toString());
+    }
+    return this.http.get<PaginatedResponse<SalonResponseDTO>>(`${this.baseUrl}/linked-list`, { params, headers: this.getAuthHeaders() });
   }
 }

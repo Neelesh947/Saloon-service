@@ -1,0 +1,29 @@
+.card {
+  border-radius: 10px;
+}
+
+.table th {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.badge {
+  padding: 6px 10px;
+  font-size: 0.75rem;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover {
+  color: #fff;
+}
+
+input.form-control,
+select.form-select {
+  border-radius: 8px;
+}
