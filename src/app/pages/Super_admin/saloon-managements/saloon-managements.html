@@ -15,7 +15,7 @@
   <!-- Page Header -->
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h4 class="fw-bold">Saloon List</h4>
-    <button class="btn btn-primary">
+    <button class="btn btn-primary" [routerLink]="['/super-admin-dashboard/add-saloon-management-admin']">
       <i class="bi bi-plus-circle me-1"></i> Add New Saloon
     </button>
   </div>
@@ -58,7 +58,7 @@
             <tr *ngFor="let saloon of saloons; let i = index">
               <td>{{ i + 1 }}</td>
 
-              <td class="fw-semibold">
+              <td class="fw-semibold" [routerLink]="['/super-admin-dashboard/edit-saloon-management-admin', saloon.id]">
                 {{ saloon.saloonName }}
               </td>
 

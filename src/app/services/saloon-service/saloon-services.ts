@@ -37,4 +37,8 @@ export class SaloonServices {
     const url = `${this.baseUrl}/update-status/${saloonId}?isEnabled=${isEnabled}`;
     return this.http.patch(url, {}, { headers: this.getAuthHeaders() });
   }
+
+  getSaloonById(id: string): Observable<SalonResponseDTO> {
+    return this.http.get<SalonResponseDTO>(`${this.baseUrl}/${id}`);
+  }
 }

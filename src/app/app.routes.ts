@@ -8,6 +8,11 @@ import { SuperAdminRouterOutlet } from './pages/Super_admin/super-admin-router-o
 import { Navbar } from './pages/Super_admin/navbar/navbar';
 import { SaloonManagements } from './pages/Super_admin/saloon-managements/saloon-managements';
 import { AnalyticsDashboardSuperAdmin } from './pages/Super_admin/analytics-dashboard-super-admin/analytics-dashboard-super-admin';
+import { UserManagementBySuperAdmin } from './pages/Super_admin/user-management-by-super-admin/user-management-by-super-admin';
+import { StaffmanagementBySuperAdmin } from './pages/Super_admin/staffmanagement-by-super-admin/staffmanagement-by-super-admin';
+import { ServiceManagementBySuperAdmin } from './pages/Super_admin/service-management-by-super-admin/service-management-by-super-admin';
+import { EditSaloonSuperAdmin } from './pages/Super_admin/edit-saloon-super-admin/edit-saloon-super-admin';
+import { AddSaloonSuperAdmin } from './pages/Super_admin/add-saloon-super-admin/add-saloon-super-admin';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
@@ -17,7 +22,12 @@ export const routes: Routes = [
         children: [
             { path: '', component: Navbar },
             { path: 'saloon-management-admin', component: SaloonManagements },
-            { path: 'super-admin-analytics', component: AnalyticsDashboardSuperAdmin }
+            { path: 'add-saloon-management-admin', component: AddSaloonSuperAdmin },
+            { path: 'edit-saloon-management-admin/:id', component: EditSaloonSuperAdmin },
+            { path: 'super-admin-analytics', component: AnalyticsDashboardSuperAdmin },
+            { path: 'user-management', component: UserManagementBySuperAdmin },
+            { path: 'staff-management', component: StaffmanagementBySuperAdmin },
+            { path: 'serivce-management', component: ServiceManagementBySuperAdmin }
         ]
     },
     { path: 'admin-dashboard', component: AdminDashboard },

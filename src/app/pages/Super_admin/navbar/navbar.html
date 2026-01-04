@@ -34,22 +34,28 @@
       </a>
     </li>
     <li>
-      <a href="#">
+      <a [routerLink]="['/super-admin-dashboard/user-management']">
         <i class="bi bi-people"></i>
         <span>Users Management</span>
       </a>
     </li>
     <li>
-      <a href="#">
+      <a [routerLink]="['/super-admin-dashboard/staff-management']">
         <i class="bi bi-grid"></i>
         <span>Staff Management</span>
       </a>
     </li>
     <li>
-      <a href="#">
+      <a [routerLink]="['/super-admin-dashboard/serivce-management']">
         <i class="bi bi-grid"></i>
         <span>Service Management</span>
       </a>
     </li>
   </ul>
+  <div class="logout-section">
+    <button class="btn-logout" (click)="logout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span>Logout</span>
+    </button>
+  </div>
 </div>

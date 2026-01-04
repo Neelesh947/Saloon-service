@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule,RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })
@@ -19,4 +19,6 @@ export class Navbar {
   toggleSidebar() {
     this.isClosed = !this.isClosed;
   }
+
+  logout() { }
 }

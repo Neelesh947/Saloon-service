@@ -54,6 +54,7 @@ body {
   list-style: none;
   padding: 0;
   margin: 20px 0;
+  flex-grow: 1;
 }
 
 .menu li {
@@ -103,4 +104,26 @@ body {
   padding: 0;
   overflow: hidden;
   transition: opacity 0.3s ease, height 0.3s ease, padding 0.3s ease;
+}
+
+.logout-section {
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.btn-logout {
+  width: 100%;
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn-logout:hover {
+  background: #c82333;
 }

@@ -4,10 +4,11 @@ import { SalonResponseDTO } from '../../../services/DTOs/salon-response-dto';
 import { SaloonServices } from '../../../services/saloon-service/saloon-services';
 import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-saloon-managements',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './saloon-managements.html',
   styleUrl: './saloon-managements.scss',
 })
