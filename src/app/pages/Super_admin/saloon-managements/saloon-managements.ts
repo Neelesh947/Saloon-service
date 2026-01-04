@@ -30,9 +30,9 @@ export class SaloonManagements {
   }
 
   // Load saloons based on the current statusFilter
-  loadSaloons(): void {
+  loadSaloons(page: number = this.pageInfo.pageNumber): void {
     const isEnabled = this.getIsEnabledFromFilter();
-    this.saloonService.getSaloonsList(isEnabled, 0, this.pageInfo.pageSize).subscribe({
+    this.saloonService.getSaloonsList(isEnabled, page, this.pageInfo.pageSize).subscribe({
       next: (res: any) => {
         this.saloons = res.content;
         this.pageInfo = res.pageInfo;
@@ -53,6 +53,7 @@ export class SaloonManagements {
 
   // Called when user changes the select dropdown
   onStatusChange(): void {
+    this.pageInfo.pageNumber = 0;
     this.loadSaloons();
   }
 
@@ -89,5 +90,55 @@ export class SaloonManagements {
         });
       }
     });
+  }
+
+  deleteUser(saloon: any) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Once the user is deleted it never be recovered',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes',
+      cancelButtonText: 'No',
+      reverseButtons: true
+    }).then((result) => {
+      this.saloonService.deleteSaloon(saloon.id).subscribe({
+        next: (response) => {
+          Swal.fire('success', 'Saloon Deleted Successfully', 'success').then(() => {
+            window.location.reload();
+          })
+        },
+        error: (err) => {
+          console.error('Error Deleting saloon:', err);
+          Swal.fire('Error', 'Failed to delete Saloon', 'error');
+        }
+      })
+    })
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.pageInfo.totalElements / this.pageInfo.pageSize);
+  }
+
+  get isFirstPage(): boolean {
+    return this.pageInfo.pageNumber === 0;
+  }
+
+  get isLastPage(): boolean {
+    return this.saloons.length < this.pageInfo.pageSize;
+  }
+
+  goToNextPage(): void {
+    if (!this.isLastPage) {
+      this.pageInfo.pageNumber += 1;
+      this.loadSaloons(this.pageInfo.pageNumber);
+    }
+  }
+
+  goToPreviousPage(): void {
+    if (!this.isFirstPage) {
+      this.pageInfo.pageNumber -= 1;
+      this.loadSaloons(this.pageInfo.pageNumber);
+    }
   }
 }

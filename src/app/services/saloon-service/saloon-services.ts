@@ -52,4 +52,9 @@ export class SaloonServices {
     const url = `${this.baseUrl}/create`;
     return this.http.post<SalonResponseDTO>(url, request, { headers: this.getAuthHeaders() });
   }
+
+  deleteSaloon(saloonId: string): Observable<any> {
+    const url = `${this.baseUrl}/${saloonId}`
+    return this.http.delete(url, { headers: this.getAuthHeaders() });
+  }
 }
