@@ -15,4 +15,8 @@ public interface SaloonRepository extends JpaRepository<Salon, UUID> {
 	boolean existsBySaloonName(String saloonName);
 
 	Page<Salon> findByActive(Boolean active, Pageable pageable);
+
+	Page<Salon> findByActiveAndCreatedBy(Boolean active, String createdBy, Pageable pageable);
+
+	Page<Salon> findByCreatedBy(String createdBy, Pageable pageable);
 }

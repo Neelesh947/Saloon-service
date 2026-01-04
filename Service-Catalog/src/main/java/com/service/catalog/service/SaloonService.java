@@ -121,4 +121,28 @@ public class SaloonService {
 				.orElseThrow(() -> new ValidationException("Salon not found with ID: " + id));
 		saloonRepository.delete(saloon);
 	}
+
+	public PaginatedResponse<SalonResponseDTO> getAllSalonsLinkedWithAdmin(Map<String, Object> allParams,
+			String adminId) {
+		Object isEnabledObj = allParams.get("isEnabled");
+		String isEnabled = (isEnabledObj != null) ? isEnabledObj.toString().toUpperCase() : "all";
+		int page = allParams.containsKey("page") ? Integer.parseInt(allParams.get("page").toString()) : 0;
+		int size = allParams.containsKey("size") ? Integer.parseInt(allParams.get("size").toString()) : 10;
+		PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+		Page<Salon> salonPage;
+		switch (isEnabled) {
+		case "TRUE":
+			salonPage = saloonRepository.findByActiveAndCreatedBy(true, adminId, pageable);
+			break;
+		case "FALSE":
+			salonPage = saloonRepository.findByActiveAndCreatedBy(false, adminId, pageable);
+			break;
+		default: // "all"
+			salonPage = saloonRepository.findByCreatedBy(adminId, pageable);
+			break;
+		}
+
+		List<SalonResponseDTO> listOFSaloon = salonPage.stream().map(this::mapToDto).collect(Collectors.toList());
+		return new PaginatedResponse<>(listOFSaloon, listOFSaloon.size(), salonPage.getNumber(), salonPage.getSize());
+	}
 }

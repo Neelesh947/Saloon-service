@@ -34,7 +34,7 @@ public class SaloonController {
 	private final SaloonService saloonService;
 
 	@PostMapping("/create")
-	@PreAuthorize("hasAnyAuthority('SUPER_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	public ResponseEntity<SalonResponseDTO> createSaloonByAdmin(@RequestBody SaloonRequestDTO saloonRequestDTO,
 			@PathVariable String realm) {
 		String adminId = SecurityUtils.getCurrentUserIdSupplier.get();
@@ -75,4 +75,12 @@ public class SaloonController {
     public void deleteSalon(@PathVariable UUID id) {
         saloonService.deleteSalon(id);
     }
+	
+	@GetMapping("/linked-list")
+	public ResponseEntity<PaginatedResponse<SalonResponseDTO>> getListOfSaloonLinkedWithAdmin(
+			@RequestParam Map<String, Object> allParams) {
+		String adminId = SecurityUtils.getCurrentUserIdSupplier.get();
+		PaginatedResponse<SalonResponseDTO> salons = saloonService.getAllSalonsLinkedWithAdmin(allParams, adminId);
+		return ResponseEntity.ok(salons);
+	}
 }
