@@ -10,4 +10,5 @@ public final class Constants {
 	public static final String CLIENT_ID = "client_id";
 	public static final String CONTENT_TYPE = "Content-Type";
 	public static final String X_WWW_FORM_URLENCODED = "application/x-www-form-urlencoded";
+	public static final String APPLICATION_JSON = "application/json";
 }

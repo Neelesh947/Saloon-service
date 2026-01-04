@@ -7,7 +7,9 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import org.apache.hc.core5.http.NameValuePair;
@@ -58,16 +60,16 @@ public class KeycloakHandler {
 		return responseDto;
 	};
 
-//	private final Supplier<TokenResponseDto> accessTokenAdminCli = () -> {
-//		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), Constants.MASTER_REALM);
-//		List<NameValuePair> body = Stream.<NameValuePair>of(
-//				new BasicNameValuePair(Constants.GRANT_TYPE, Constants.PASSWORD),
-//				new BasicNameValuePair(Constants.CLIENT_ID, keycloakProperties.getAdminClient()),
-//				new BasicNameValuePair(Constants.USERNAME, keycloakProperties.getAdminCredentials().getUsername()),
-//				new BasicNameValuePair(Constants.PASSWORD, keycloakProperties.getAdminCredentials().getPassword()))
-//				.toList();
-//		return accesstoken.apply(url, body);
-//	};
+	private final Supplier<TokenResponseDto> accessTokenAdminCli = () -> {
+		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), Constants.MASTER_REALM);
+		List<NameValuePair> body = Stream.<NameValuePair>of(
+				new BasicNameValuePair(Constants.GRANT_TYPE, Constants.PASSWORD),
+				new BasicNameValuePair(Constants.CLIENT_ID, keycloakProperties.getAdminClient()),
+				new BasicNameValuePair(Constants.USERNAME, keycloakProperties.getAdminCredentials().getUsername()),
+				new BasicNameValuePair(Constants.PASSWORD, keycloakProperties.getAdminCredentials().getPassword()))
+				.toList();
+		return accesstoken.apply(url, body);
+	};
 
 	public final BiFunction<LoginDto, String, TokenResponseDto> userAccessToken = (credentials, realm) -> {
 		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), realm);
@@ -79,5 +81,33 @@ public class KeycloakHandler {
 								Constants.CLIENT_SECRET, keycloakProperties.getCredentials().getSecrets().get(realm)))
 				.toList();
 		return accesstoken.apply(url, body);
+	};
+
+	public final BiFunction<Object[], Void, Map<String, String>> createUserFn = (args, v) -> {
+		Object userObject = args[0];
+		String role = (String) args[1];
+		String realm = (String) args[2];
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			String adminToken = accessTokenAdminCli.get().getAccessToken();
+			String url = MessageFormat.format(keycloakProperties.getCreateUserUrl(), realm, role);
+			String requestBody = objectMapper.writeValueAsString(userObject);
+			HttpRequest request = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
+					.header("Authorization", "Bearer " + adminToken)
+					.POST(HttpRequest.BodyPublishers.ofString(requestBody)).build();
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+
+			if (response.statusCode() >= 400 && response.statusCode() < 600) {
+				ErrorResponseDto error = objectMapper.readValue(response.body(), ErrorResponseDto.class);
+				throw new ValidationException(error.getErrorDescription());
+			}
+
+			return Map.of("status", "success", "message", "User Created");
+		} catch (ValidationException e) {
+			throw e;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
 	};
 }

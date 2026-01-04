@@ -11,4 +11,5 @@ keycloak:
   admin-credentials: 
     username: neelesh
     password: neelesh
-  user-name-url:   
+  user-name-url: http://localhost:8080/admin/realms/{0}/users
+  create-user-url: http://localhost:8080/admin/realms/{0}/users

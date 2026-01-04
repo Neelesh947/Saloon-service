@@ -1,5 +1,7 @@
 package com.keycloak.service;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.keycloak.dto.LoginDto;
@@ -17,6 +19,10 @@ public class KeycloakService {
 
 	public TokenResponseDto login(LoginDto loginDto, String realm) {
 		return keycloakHandler.userAccessToken.apply(loginDto, realm);
+	}
+
+	public Map<String, String> createUser(Object userObject, String role, String realm) {
+		return keycloakHandler.createUserFn.apply(new Object[] { userObject, role, realm }, null);
 	}
 
 }

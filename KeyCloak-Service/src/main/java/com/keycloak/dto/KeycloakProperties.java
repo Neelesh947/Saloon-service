@@ -25,7 +25,9 @@ public class KeycloakProperties {
 	
 	private AdminCredentials adminCredentials;
 	
-	private Credentials credentials; 
+	private Credentials credentials;
+	
+	private String createUserUrl;
 	
 	@Data
     @NoArgsConstructor
