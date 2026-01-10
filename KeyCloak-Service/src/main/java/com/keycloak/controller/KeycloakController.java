@@ -1,8 +1,12 @@
 package com.keycloak.controller;
 
+import java.util.List;
+
+import org.keycloak.representations.idm.EventRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +22,7 @@ import com.keycloak.dto.TokenResponseDto;
 import com.keycloak.dto.UserCredentialDTO;
 import com.keycloak.service.KeycloakService;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 @RestController
@@ -154,11 +159,13 @@ public class KeycloakController {
 	}
 
 	@PutMapping("/update/user/{userId}")
-	public ResponseEntity<Void> updateUser(@RequestBody UserRepresentation userObject, @PathVariable String userId,
-			@PathVariable String realm) {
-
-		keycloakService.updateUser(userObject, userId, realm);
-		return ResponseEntity.ok().build();
+	public void updateKeycloakUser(@Valid @RequestBody UserRepresentation userRepresentationDTO,
+			@NotBlank(message = "User ID must not be null or empty") @PathVariable String userId,
+			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
+		try {
+			keycloakService.updateUser.accept(userRepresentationDTO, userId, realm);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
-
 }

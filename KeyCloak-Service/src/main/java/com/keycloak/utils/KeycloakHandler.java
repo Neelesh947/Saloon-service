@@ -301,25 +301,26 @@ public class KeycloakHandler {
 		}
 	};
 
-	public final BiFunction<Object[], Void, Void> updateUserFn = (args, v) -> {
-		UserRepresentation user = (UserRepresentation) args[0];
-		String userId = (String) args[1];
-		String realm = (String) args[2];
-
-		ObjectMapper mapper = new ObjectMapper();
+	public TriConsumer<UserRepresentation, String, String> updateKeycloakUser = (userRepresentation, userId, realm) -> {
+		String url = MessageFormat.format(keycloakProperties.getUserById(), realm, userId);
+		ObjectMapper objectMapper = new ObjectMapper();
+		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 		try {
-			String adminToken = accessTokenAdminCli.get().getAccessToken();
-			String url = MessageFormat.format(keycloakProperties.getUpdateUserUrl(), realm, userId);
-
-			String body = mapper.writeValueAsString(user);
-
-			HttpRequest request = HttpRequest.newBuilder().uri(new URI(url))
+			String requestJson = objectMapper.writeValueAsString(userRepresentation);
+			HttpRequest putRequest = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
-					.header("Authorization", "Bearer " + adminToken).PUT(HttpRequest.BodyPublishers.ofString(body))
-					.build();
-
-			httpClient.send(request, HttpResponse.BodyHandlers.discarding());
-			return null;
+					.PUT(HttpRequest.BodyPublishers.ofString(requestJson)).build();
+			HttpResponse<String> response = httpClient.send(putRequest, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				String responseString = response.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getErrorMessage());
+			}
+		} catch (ValidationException ex) {
+			throw ex;
 		} catch (Exception e) {
 			throw new InternalException(e);
 		}

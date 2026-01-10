@@ -36,7 +36,8 @@ public class KeycloakService {
 	private KeycloakProperties keycloakProperties;
 	private KeycloakObjectMapper keycloakObjectMapper;
 
-	public KeycloakService(KeycloakHandler keycloakHandler, KeycloakProperties keycloakProperties, KeycloakObjectMapper keycloakObjectMapper) {
+	public KeycloakService(KeycloakHandler keycloakHandler, KeycloakProperties keycloakProperties,
+			KeycloakObjectMapper keycloakObjectMapper) {
 		this.keycloakHandler = keycloakHandler;
 		this.keycloakProperties = keycloakProperties;
 		this.keycloakObjectMapper = keycloakObjectMapper;
@@ -151,7 +152,7 @@ public class KeycloakService {
 						new BasicNameValuePair(Constants.REFRESH_TOKEN, refreshToken))
 				.map(pair -> (NameValuePair) pair).toList();
 	};
-	
+
 	/**
 	 * logout
 	 */
@@ -166,46 +167,49 @@ public class KeycloakService {
 		return keycloakHandler.createUserFn.apply(new Object[] { userObject, role, realm }, null);
 	}
 
-	public void updateUser(UserRepresentation userObject, String userId, String realm) {
-		keycloakHandler.updateUserFn.apply(new Object[] { userObject, userId, realm }, null);
-	}
-	
 	/**
-     * Password operation like reset and forgot password handler
-     */
-    private final BiConsumer<UserCredentialDTO, TriConsumer<UserCredentialDTO, String, String>> passwordOperationHandler = (userCredential, passwordOperation) -> {
-        String realm = userCredential.getRealm();
-        String userName = userCredential.getUserName();
-        String clientSecret = dashboardClientSecret.apply(realm);
-        String clientToken = keycloakHandler.clientToken.apply(realm, keycloakProperties.getResource(), clientSecret);
-        String url = MessageFormat.format(keycloakProperties.getUserNameUrl(), realm, userName);
-        String userId = keycloakHandler.keycloakUserId.apply(url, clientToken);
-        passwordOperation.accept(userCredential, clientToken, userId);
-    };
-	
+	 * Password operation like reset and forgot password handler
+	 */
+	private final BiConsumer<UserCredentialDTO, TriConsumer<UserCredentialDTO, String, String>> passwordOperationHandler = (
+			userCredential, passwordOperation) -> {
+		String realm = userCredential.getRealm();
+		String userName = userCredential.getUserName();
+		String clientSecret = dashboardClientSecret.apply(realm);
+		String clientToken = keycloakHandler.clientToken.apply(realm, keycloakProperties.getResource(), clientSecret);
+		String url = MessageFormat.format(keycloakProperties.getUserNameUrl(), realm, userName);
+		String userId = keycloakHandler.keycloakUserId.apply(url, clientToken);
+		passwordOperation.accept(userCredential, clientToken, userId);
+	};
+
 	/**
-     * reset password
-     */
-    public final Consumer<UserCredentialDTO> resetPassword = userCredential -> passwordOperationHandler
-            .accept(userCredential, (uc, clientToken, userId) -> keycloakHandler.generateResetPassword
-                    .accept(userCredential, clientToken, userId));
-    
-    /**
-     * Forgot password
-     */
-    public final Consumer<UserCredentialDTO> forgotPassword = userCredential -> passwordOperationHandler
-            .accept(userCredential, (uc, clientToken, userId) -> keycloakHandler.forgotPassword
-                    .accept(userCredential, clientToken, userId));
-    
-    /**
-     * create user
-     */
-    public final TriFunction<KeycloakUserDto, String, String, String> createUser = (userDTO, role, realm) -> {
-    	UserRepresentation userRepresentation = keycloakObjectMapper.keycloakUserRepresentation.apply(userDTO, role);
-    	String userId = keycloakHandler.createKeycloakUser.apply(realm, userRepresentation);
-    	List<RoleRepresentationDTO> rolesInRealm = keycloakHandler.keycloakRoles.apply(role, realm);
-    	keycloakHandler.assignRoleToUser.accept(rolesInRealm, realm, userId);
-    	return userId;
-    };
+	 * reset password
+	 */
+	public final Consumer<UserCredentialDTO> resetPassword = userCredential -> passwordOperationHandler
+			.accept(userCredential, (uc, clientToken, userId) -> keycloakHandler.generateResetPassword
+					.accept(userCredential, clientToken, userId));
+
+	/**
+	 * Forgot password
+	 */
+	public final Consumer<UserCredentialDTO> forgotPassword = userCredential -> passwordOperationHandler.accept(
+			userCredential,
+			(uc, clientToken, userId) -> keycloakHandler.forgotPassword.accept(userCredential, clientToken, userId));
+
+	/**
+	 * create user
+	 */
+	public final TriFunction<KeycloakUserDto, String, String, String> createUser = (userDTO, role, realm) -> {
+		UserRepresentation userRepresentation = keycloakObjectMapper.keycloakUserRepresentation.apply(userDTO, role);
+		String userId = keycloakHandler.createKeycloakUser.apply(realm, userRepresentation);
+		List<RoleRepresentationDTO> rolesInRealm = keycloakHandler.keycloakRoles.apply(role, realm);
+		keycloakHandler.assignRoleToUser.accept(rolesInRealm, realm, userId);
+		return userId;
+	};
+
+	/**
+	 * update user
+	 */
+	public final TriConsumer<UserRepresentation, String, String> updateUser = (userDTO, userId,
+			realm) -> keycloakHandler.updateKeycloakUser.accept(userDTO, userId, realm);
 
 }

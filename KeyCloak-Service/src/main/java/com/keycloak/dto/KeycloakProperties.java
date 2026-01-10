@@ -51,6 +51,8 @@ public class KeycloakProperties {
 	
 	private String userRoleMappings;
 	
+	private String userById;
+	
 	@Data
     @NoArgsConstructor
     public static class AdminCredentials {
