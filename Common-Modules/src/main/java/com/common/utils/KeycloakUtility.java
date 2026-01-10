@@ -66,12 +66,98 @@ public class KeycloakUtility {
 			throw new InternalException(e);
 		}
 	}
-	
-	//userByEmailAndRole list
-	//UserByUserName list
-	//UserById
-	//allUsersOfSpecificRoleAndRealm list
-	//usersByRoleOfAllRealm list
-	//validateUsername
-	//fetchUserAcrossRealmsByRoleAndId
+
+	// userByEmailAndRole list
+	public List<UserRepresentation> userByEmailAndRole(String email, String role, String realm) {
+		String urlEndpoint = keycloakUrl + realm + "/keycloak/user/by/email/" + email + "/" + role;
+
+		try {
+			ResponseEntity<List<UserRepresentation>> response = restTemplate.exchange(urlEndpoint, HttpMethod.GET, null,
+					new ParameterizedTypeReference<List<UserRepresentation>>() {
+					});
+			return response.getBody();
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	}
+
+	// UserByUserName list
+	public List<UserRepresentation> userByUsername(String username, String realm) {
+		String urlEndpoint = keycloakUrl + realm + "/keycloak/user/by/username/" + username;
+
+		try {
+			ResponseEntity<List<UserRepresentation>> response = restTemplate.exchange(urlEndpoint, HttpMethod.GET, null,
+					new ParameterizedTypeReference<List<UserRepresentation>>() {
+					});
+			return response.getBody();
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	}
+
+	// UserById
+	public UserRepresentation userById(String userId, String realm) {
+		String urlEndpoint = keycloakUrl + realm + "/keycloak/user/" + userId;
+
+		try {
+			ResponseEntity<UserRepresentation> response = restTemplate.exchange(urlEndpoint, HttpMethod.GET, null,
+					UserRepresentation.class);
+			return response.getBody();
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	}
+
+	// allUsersOfSpecificRoleAndRealm list
+	public List<UserRepresentation> allUsersOfSpecificRoleAndRealm(String role, String realm) {
+		String urlEndpoint = keycloakUrl + realm + "/keycloak/users/by/role/" + role;
+
+		try {
+			ResponseEntity<List<UserRepresentation>> response = restTemplate.exchange(urlEndpoint, HttpMethod.GET, null,
+					new ParameterizedTypeReference<List<UserRepresentation>>() {
+					});
+			return response.getBody();
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	}
+
+	// usersByRoleOfAllRealm list
+	public Map<String, List<UserRepresentation>> usersByRoleOfAllRealm(String role) {
+		String urlEndpoint = keycloakUrl + "keycloak/users/by/role/all-realms/" + role;
+
+		try {
+			ResponseEntity<Map<String, List<UserRepresentation>>> response = restTemplate.exchange(urlEndpoint,
+					HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, List<UserRepresentation>>>() {
+					});
+			return response.getBody();
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	}
+
+	// validateUsername
+	public boolean validateUsername(String username, String realm) {
+		String urlEndpoint = keycloakUrl + realm + "/keycloak/validate/username/" + username;
+
+		try {
+			ResponseEntity<Boolean> response = restTemplate.exchange(urlEndpoint, HttpMethod.GET, null, Boolean.class);
+			return Boolean.TRUE.equals(response.getBody());
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	}
+
+	// fetchUserAcrossRealmsByRoleAndId
+	public UserRepresentation fetchUserAcrossRealmsByRoleAndId(String userId, String role) {
+		String urlEndpoint = keycloakUrl + "keycloak/user/by/id/role/" + userId + "/" + role;
+
+		try {
+			ResponseEntity<UserRepresentation> response = restTemplate.exchange(urlEndpoint, HttpMethod.GET, null,
+					UserRepresentation.class);
+			return response.getBody();
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	}
 }
