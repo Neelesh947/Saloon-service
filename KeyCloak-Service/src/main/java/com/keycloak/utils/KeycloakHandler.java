@@ -3,10 +3,12 @@ package com.keycloak.utils;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +17,8 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,16 +32,19 @@ import org.springframework.stereotype.Component;
 
 import com.exception.handling.models.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keycloak.dto.ErrorResponseDto;
 import com.keycloak.dto.KeycloakProperties;
 import com.keycloak.dto.LoginDto;
+import com.keycloak.dto.RoleRepresentationDTO;
 import com.keycloak.dto.TokenResponseDto;
 import com.keycloak.dto.UserCredentialDTO;
 import com.keycloak.function.QuadConsumer;
 import com.keycloak.function.TriConsumer;
 import com.keycloak.function.TriFunction;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 @Component
 public class KeycloakHandler {
@@ -205,6 +212,90 @@ public class KeycloakHandler {
 			throw ex;
 		} catch (JsonProcessingException e) {
 			throw new InternalException(e);
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
+	public final BiFunction<String, UserRepresentation, String> createKeycloakUser = (realm, userRepresentation) -> {
+		String userId = null;
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			String url = MessageFormat.format(keycloakProperties.getAllUsers(), realm);
+			objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+			objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+			String json = objectMapper.writeValueAsString(userRepresentation);
+			HttpRequest request = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
+					.POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
+			HttpResponse<String> keycloakResponse = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			int statusCode = keycloakResponse.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				String responseString = keycloakResponse.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getErrorMessage());
+			}
+			HttpHeaders headers = keycloakResponse.headers();
+			List<String> locationHeader = headers.map().get(Constants.LOCATION_HEADER);
+			if (locationHeader != null && !locationHeader.isEmpty()) {
+				String locationUrl = locationHeader.get(0);
+				String regex = Constants.USER_ID_REGEX;
+				Pattern pattern = Pattern.compile(regex);
+				Matcher matcher = pattern.matcher(locationUrl);
+				if (matcher.find()) {
+					userId = matcher.group(1);
+				}
+			}
+		} catch (ValidationException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+		return userId;
+	};
+
+	public final BiFunction<String, String, List<RoleRepresentationDTO>> keycloakRoles = (role, realm) -> {
+		String url = MessageFormat.format(keycloakProperties.getRoleDetails(), realm, role);
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).GET().build();
+			HttpResponse<String> response = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				String responseString = response.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getError());
+			}
+			String responseString = response.body();
+			return Collections.singletonList(objectMapper.readValue(responseString, RoleRepresentationDTO.class));
+		} catch (ValidationException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
+	public final TriConsumer<List<RoleRepresentationDTO>, String, String> assignRoleToUser = (roles, realm, userId) -> {
+		String url = MessageFormat.format(keycloakProperties.getUserRoleMappings(), realm, userId);
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			String jsonRoles = objectMapper.writeValueAsString(roles);
+			HttpRequest postRequest = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
+					.POST(HttpRequest.BodyPublishers.ofString(jsonRoles)).build();
+			HttpResponse<String> response = httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				String responseString = response.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getErrorMessage());
+			}
+		} catch (ValidationException ex) {
+			throw ex;
 		} catch (Exception e) {
 			throw new InternalException(e);
 		}

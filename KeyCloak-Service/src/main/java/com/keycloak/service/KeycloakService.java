@@ -19,22 +19,27 @@ import org.springframework.stereotype.Service;
 import com.exception.handling.models.ValidationException;
 import com.keycloak.dto.ClientCredentialsDTO;
 import com.keycloak.dto.KeycloakProperties;
+import com.keycloak.dto.KeycloakUserDto;
+import com.keycloak.dto.RoleRepresentationDTO;
 import com.keycloak.dto.TokenResponseDto;
 import com.keycloak.dto.UserCredentialDTO;
 import com.keycloak.function.TriConsumer;
 import com.keycloak.function.TriFunction;
 import com.keycloak.utils.Constants;
 import com.keycloak.utils.KeycloakHandler;
+import com.keycloak.utils.KeycloakObjectMapper;
 
 @Service
 public class KeycloakService {
 
 	private KeycloakHandler keycloakHandler;
 	private KeycloakProperties keycloakProperties;
+	private KeycloakObjectMapper keycloakObjectMapper;
 
-	public KeycloakService(KeycloakHandler keycloakHandler, KeycloakProperties keycloakProperties) {
+	public KeycloakService(KeycloakHandler keycloakHandler, KeycloakProperties keycloakProperties, KeycloakObjectMapper keycloakObjectMapper) {
 		this.keycloakHandler = keycloakHandler;
 		this.keycloakProperties = keycloakProperties;
+		this.keycloakObjectMapper = keycloakObjectMapper;
 	}
 
 	private final Function<UserCredentialDTO, String> loginURL = userCredential -> {
@@ -191,5 +196,16 @@ public class KeycloakService {
     public final Consumer<UserCredentialDTO> forgotPassword = userCredential -> passwordOperationHandler
             .accept(userCredential, (uc, clientToken, userId) -> keycloakHandler.forgotPassword
                     .accept(userCredential, clientToken, userId));
+    
+    /**
+     * create user
+     */
+    public final TriFunction<KeycloakUserDto, String, String, String> createUser = (userDTO, role, realm) -> {
+    	UserRepresentation userRepresentation = keycloakObjectMapper.keycloakUserRepresentation.apply(userDTO, role);
+    	String userId = keycloakHandler.createKeycloakUser.apply(realm, userRepresentation);
+    	List<RoleRepresentationDTO> rolesInRealm = keycloakHandler.keycloakRoles.apply(role, realm);
+    	keycloakHandler.assignRoleToUser.accept(rolesInRealm, realm, userId);
+    	return userId;
+    };
 
 }

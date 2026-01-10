@@ -45,6 +45,12 @@ public class KeycloakProperties {
 	
 	private String updatePasswordRedirectUri;
 	
+	private String allUsers;
+	
+	private String roleDetails;
+	
+	private String userRoleMappings;
+	
 	@Data
     @NoArgsConstructor
     public static class AdminCredentials {

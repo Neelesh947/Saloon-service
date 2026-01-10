@@ -1,7 +1,5 @@
 package com.keycloak.controller;
 
-import java.util.Map;
-
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +17,8 @@ import com.keycloak.dto.KeycloakUserDto;
 import com.keycloak.dto.TokenResponseDto;
 import com.keycloak.dto.UserCredentialDTO;
 import com.keycloak.service.KeycloakService;
+
+import jakarta.validation.constraints.NotBlank;
 
 @RestController
 @RequestMapping("/{realm}/keycloak")
@@ -110,13 +110,15 @@ public class KeycloakController {
 			throw e;
 		}
 	}
-	
+
 	/**
-	 * Handles the request to send a forgot password link to the user.
-	 * This method validates the user credentials and triggers the process of sending
-	 * a password reset link to the user's registered email address.
-	 * @param userCredential the user's credentials required to request a password reset
-	 * @param realm the realm or domain associated with the user
+	 * Handles the request to send a forgot password link to the user. This method
+	 * validates the user credentials and triggers the process of sending a password
+	 * reset link to the user's registered email address.
+	 * 
+	 * @param userCredential the user's credentials required to request a password
+	 *                       reset
+	 * @param realm          the realm or domain associated with the user
 	 */
 	@PutMapping("/forgot-password")
 	public void sendForgotPasswordLink(@Validated @RequestBody UserCredentialDTO userCredential,
@@ -129,11 +131,26 @@ public class KeycloakController {
 		}
 	}
 
+	/**
+	 * Handles the creation of a Keycloak user for a specified realm and role.
+	 * 
+	 * @param userDTO the data transfer object containing user details and
+	 *                attributes required for creation
+	 * @param realm   the realm to which the user belongs; must not be null or empty
+	 * @param role    the role to assign to the user; must not be null or empty
+	 * @return the response from the Keycloak service indicating the result of the
+	 *         user creation
+	 */
 	@PostMapping("/create/user")
-	public ResponseEntity<Map<String, String>> createUser(@RequestBody KeycloakUserDto userObject,
-			@RequestParam String role, @PathVariable String realm) {
-		Map<String, String> response = keycloakService.createUser(userObject, role, realm);
-		return ResponseEntity.ok(response);
+	public String createKeycloakUser(@RequestBody KeycloakUserDto userDTO,
+			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm,
+			@NotBlank(message = "Role must not be null or empty") @RequestParam String role) {
+		try {
+			String response = keycloakService.createUser.apply(userDTO, role, realm);
+			return response;
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 	@PutMapping("/update/user/{userId}")
