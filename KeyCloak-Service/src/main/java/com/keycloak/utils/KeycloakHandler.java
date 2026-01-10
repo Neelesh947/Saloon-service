@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
 
 import com.exception.handling.models.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -339,6 +340,34 @@ public class KeycloakHandler {
 				String responseString = response.body();
 				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
 				throw new ValidationException(errorResponse.getErrorMessage());
+			}
+		} catch (ValidationException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
+	public final Function<String, List<UserRepresentation>> userDataDetails = url -> {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).GET().build();
+			HttpResponse<String> response = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			String responseString = response.body();
+			if (statusCode >= 400 && statusCode < 600) {
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getError());
+			}
+			JsonNode jsonNode = objectMapper.readTree(responseString);
+			if (jsonNode.isArray()) {
+				return objectMapper.readValue(responseString, new TypeReference<List<UserRepresentation>>() {
+				});
+			} else {
+				UserRepresentation singleObject = objectMapper.readValue(responseString, UserRepresentation.class);
+				return Collections.singletonList(singleObject);
 			}
 		} catch (ValidationException ex) {
 			throw ex;

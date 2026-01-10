@@ -16,6 +16,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 
+import com.exception.handling.models.NotFoundException;
 import com.exception.handling.models.ValidationException;
 import com.keycloak.dto.ClientCredentialsDTO;
 import com.keycloak.dto.KeycloakProperties;
@@ -217,5 +218,14 @@ public class KeycloakService {
 	 */
 	public final BiConsumer<String, String> deleteUser = (userId, realm) -> keycloakHandler.deleteKeycloakUser
 			.accept(userId, realm);
+
+	/**
+	 * get user by user id
+	 */
+	public final BiFunction<String, String, UserRepresentation> userById = (userId, realm) -> {
+		String url = MessageFormat.format(keycloakProperties.getUserById(), realm, userId);
+		return keycloakHandler.userDataDetails.apply(url).stream().findFirst()
+				.orElseThrow(() -> new NotFoundException("Invalid User Id"));
+	};
 
 }

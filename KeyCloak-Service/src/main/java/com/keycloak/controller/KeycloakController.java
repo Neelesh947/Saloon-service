@@ -174,4 +174,15 @@ public class KeycloakController {
 			throw e;
 		}
 	}
+	
+	@GetMapping("/user/{userId}")
+	public UserRepresentation keycloakUserById(
+			@NotBlank(message = "User ID must not be null or empty") @PathVariable String userId,
+			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
+		try {
+			return keycloakService.userById.apply(userId, realm);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 }
