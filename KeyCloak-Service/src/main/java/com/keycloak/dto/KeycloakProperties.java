@@ -29,6 +29,10 @@ public class KeycloakProperties {
 	
 	private String createUserUrl;
 	
+	private String updateUserUrl;
+	
+	private String clearSessionUrl;
+	
 	@Data
     @NoArgsConstructor
     public static class AdminCredentials {
