@@ -17,5 +17,4 @@ public class KeycloakuserDto {
 	private boolean isEnabled;	
 	private List<Credentials> credentials;
 	private Map<String, List<String>> attributes;
-//	private String realm;
 }
