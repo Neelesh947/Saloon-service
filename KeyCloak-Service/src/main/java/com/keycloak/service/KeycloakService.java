@@ -184,5 +184,12 @@ public class KeycloakService {
     public final Consumer<UserCredentialDTO> resetPassword = userCredential -> passwordOperationHandler
             .accept(userCredential, (uc, clientToken, userId) -> keycloakHandler.generateResetPassword
                     .accept(userCredential, clientToken, userId));
+    
+    /**
+     * Forgot password
+     */
+    public final Consumer<UserCredentialDTO> forgotPassword = userCredential -> passwordOperationHandler
+            .accept(userCredential, (uc, clientToken, userId) -> keycloakHandler.forgotPassword
+                    .accept(userCredential, clientToken, userId));
 
 }

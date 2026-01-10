@@ -27,6 +27,7 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import com.exception.handling.models.ValidationException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.keycloak.dto.ErrorResponseDto;
@@ -177,6 +178,33 @@ public class KeycloakHandler {
 			}
 		} catch (ValidationException ex) {
 			throw ex;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
+	public final TriConsumer<UserCredentialDTO, String, String> forgotPassword = (userCredential, token, userId) -> {
+		String lifespan = String.valueOf(keycloakProperties.getUpdatePasswordLifespan()).replace(",", "");
+		String forgotPasswordUrl = MessageFormat.format(keycloakProperties.getForgotPasswordUrl(), userId,
+				keycloakProperties.getResource(), lifespan, keycloakProperties.getUpdatePasswordRedirectUri());
+		try {
+			String jsonBody = new ObjectMapper().writeValueAsString(List.of("UPDATE_PASSWORD"));
+			HttpRequest request = HttpRequest.newBuilder().uri(new URI(forgotPasswordUrl))
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
+					.header(Constants.AUTHORIZATION, Constants.BEARER + token)
+					.PUT(HttpRequest.BodyPublishers.ofString(jsonBody, StandardCharsets.UTF_8)).build();
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				String responseString = response.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getErrorMessage());
+			}
+		} catch (ValidationException ex) {
+			throw ex;
+		} catch (JsonProcessingException e) {
+			throw new InternalException(e);
 		} catch (Exception e) {
 			throw new InternalException(e);
 		}

@@ -39,6 +39,12 @@ public class KeycloakProperties {
 	
 	private String resetPasswordUrl;
 	
+	private String updatePasswordLifespan;
+	
+	private String forgotPasswordUrl;
+	
+	private String updatePasswordRedirectUri;
+	
 	@Data
     @NoArgsConstructor
     public static class AdminCredentials {

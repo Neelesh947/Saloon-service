@@ -110,6 +110,24 @@ public class KeycloakController {
 			throw e;
 		}
 	}
+	
+	/**
+	 * Handles the request to send a forgot password link to the user.
+	 * This method validates the user credentials and triggers the process of sending
+	 * a password reset link to the user's registered email address.
+	 * @param userCredential the user's credentials required to request a password reset
+	 * @param realm the realm or domain associated with the user
+	 */
+	@PutMapping("/forgot-password")
+	public void sendForgotPasswordLink(@Validated @RequestBody UserCredentialDTO userCredential,
+			@PathVariable String realm) {
+		userCredential.setRealm(realm);
+		try {
+			keycloakService.forgotPassword.accept(userCredential);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 
 	@PostMapping("/create/user")
 	public ResponseEntity<Map<String, String>> createUser(@RequestBody KeycloakUserDto userObject,
