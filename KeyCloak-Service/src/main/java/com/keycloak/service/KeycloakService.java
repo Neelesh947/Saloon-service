@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -76,7 +77,7 @@ public class KeycloakService {
 		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), userCredential.getRealm());
 		return keycloakHandler.accesstoken.apply(url, loginRequestBody.apply(userCredential));
 	};
-	
+
 	/**
 	 * Regular login username password or one code/QR
 	 */
@@ -130,6 +131,28 @@ public class KeycloakService {
 		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), realm);
 		return keycloakHandler.accesstoken.apply(url,
 				refreshTokenBody.apply(credentials.getClientId(), credentials.getClientSecret(), refreshToken));
+	};
+
+	/**
+	 * logout request body
+	 */
+	private final TriFunction<String, String, String, List<NameValuePair>> logoutBody = (clientId, clientSecret,
+			refreshToken) -> {
+		return Stream
+				.of(new BasicNameValuePair(Constants.CLIENT_ID, clientId),
+						new BasicNameValuePair(Constants.CLIENT_SECRET, clientSecret),
+						new BasicNameValuePair(Constants.REFRESH_TOKEN, refreshToken))
+				.map(pair -> (NameValuePair) pair).toList();
+	};
+	
+	/**
+	 * logout
+	 */
+	public final BiConsumer<String, String> logout = (refreshToken, realm) -> {
+		ClientCredentialsDTO credentials = determineClientCredentials.apply(realm);
+		String url = MessageFormat.format(keycloakProperties.getLogoutUrl(), realm);
+		keycloakHandler.logout.accept(url,
+				logoutBody.apply(credentials.getClientId(), credentials.getClientSecret(), refreshToken));
 	};
 
 	public Map<String, String> createUser(Object userObject, String role, String realm) {

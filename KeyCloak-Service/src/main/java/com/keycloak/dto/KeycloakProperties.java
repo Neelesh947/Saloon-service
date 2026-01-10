@@ -33,6 +33,8 @@ public class KeycloakProperties {
 	
 	private String clearSessionUrl;
 	
+	private String logoutUrl;
+	
 	@Data
     @NoArgsConstructor
     public static class AdminCredentials {

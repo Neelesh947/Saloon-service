@@ -69,6 +69,27 @@ public class KeycloakController {
 		}
 	}
 
+	/**
+	 * Handles the logout operation for a user by invalidating the provided refresh
+	 * token. Logs the process status whether successful or error occurred during
+	 * the logout process.
+	 * 
+	 * @param refreshToken  The refresh token of the user to be logged out, provided
+	 *                      in the request header.
+	 * @param realm         The realm or domain under which the user is associated,
+	 *                      specified as a path variable.
+	 * @param terminalAdmin A flag indicating whether the logout request is for a
+	 *                      terminal admin session. The default value is false.
+	 */
+	@PostMapping("/logout")
+	public void logout(@RequestHeader("refresh-token") String refreshToken, @PathVariable String realm) {
+		try {
+			keycloakService.logout.accept(refreshToken, realm);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	@PostMapping("/create/user")
 	public ResponseEntity<Map<String, String>> createUser(@RequestBody KeycloakUserDto userObject,
 			@RequestParam String role, @PathVariable String realm) {

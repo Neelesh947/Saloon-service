@@ -10,6 +10,7 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.function.Supplier;
@@ -117,6 +118,22 @@ public class KeycloakHandler {
 			return Map.of("status", "success", "message", "User Created");
 		} catch (ValidationException e) {
 			throw e;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
+	public final BiConsumer<String, List<NameValuePair>> logout = (url, body) -> {
+		try {
+			String formBody = buildFormBody(body);
+			HttpRequest request = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.CONTENT_TYPE, Constants.X_WWW_FORM_URLENCODED)
+					.POST(HttpRequest.BodyPublishers.ofString(formBody)).build();
+			HttpResponse<Void> response = httpClient.send(request, HttpResponse.BodyHandlers.discarding());
+			int statusCode = response.statusCode();
+			if (statusCode < 200 || statusCode >= 300) {
+				throw new InternalException("Logout failed with status code: " + statusCode);
+			}
 		} catch (Exception e) {
 			throw new InternalException(e);
 		}
