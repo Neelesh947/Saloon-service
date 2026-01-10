@@ -90,6 +90,27 @@ public class KeycloakController {
 		}
 	}
 
+	/**
+	 * Resets the password for a specified user within the given realm. The method
+	 * validates the user credentials, sets the realm, and delegates the password
+	 * reset process to the keycloak service. Logs success or error messages based
+	 * on the outcome.
+	 * 
+	 * @param userCredential the user credentials containing username and password
+	 *                       details
+	 * @param realm          the realm in which the user's password is to be reset
+	 */
+	@PutMapping("/reset-password")
+	public void resetUserPassword(@Validated @RequestBody UserCredentialDTO userCredential,
+			@PathVariable String realm) {
+		userCredential.setRealm(realm);
+		try {
+			keycloakService.resetPassword.accept(userCredential);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
 	@PostMapping("/create/user")
 	public ResponseEntity<Map<String, String>> createUser(@RequestBody KeycloakUserDto userObject,
 			@RequestParam String role, @PathVariable String realm) {

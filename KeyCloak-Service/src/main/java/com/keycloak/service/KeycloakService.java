@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -20,6 +21,7 @@ import com.keycloak.dto.ClientCredentialsDTO;
 import com.keycloak.dto.KeycloakProperties;
 import com.keycloak.dto.TokenResponseDto;
 import com.keycloak.dto.UserCredentialDTO;
+import com.keycloak.function.TriConsumer;
 import com.keycloak.function.TriFunction;
 import com.keycloak.utils.Constants;
 import com.keycloak.utils.KeycloakHandler;
@@ -162,5 +164,25 @@ public class KeycloakService {
 	public void updateUser(UserRepresentation userObject, String userId, String realm) {
 		keycloakHandler.updateUserFn.apply(new Object[] { userObject, userId, realm }, null);
 	}
+	
+	/**
+     * Password operation like reset and forgot password handler
+     */
+    private final BiConsumer<UserCredentialDTO, TriConsumer<UserCredentialDTO, String, String>> passwordOperationHandler = (userCredential, passwordOperation) -> {
+        String realm = userCredential.getRealm();
+        String userName = userCredential.getUserName();
+        String clientSecret = dashboardClientSecret.apply(realm);
+        String clientToken = keycloakHandler.clientToken.apply(realm, keycloakProperties.getResource(), clientSecret);
+        String url = MessageFormat.format(keycloakProperties.getUserNameUrl(), realm, userName);
+        String userId = keycloakHandler.keycloakUserId.apply(url, clientToken);
+        passwordOperation.accept(userCredential, clientToken, userId);
+    };
+	
+	/**
+     * reset password
+     */
+    public final Consumer<UserCredentialDTO> resetPassword = userCredential -> passwordOperationHandler
+            .accept(userCredential, (uc, clientToken, userId) -> keycloakHandler.generateResetPassword
+                    .accept(userCredential, clientToken, userId));
 
 }

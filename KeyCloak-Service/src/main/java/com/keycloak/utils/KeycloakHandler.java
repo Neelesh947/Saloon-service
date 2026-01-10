@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,6 +22,8 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.util.InternalException;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.boot.configurationprocessor.json.JSONException;
+import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import com.exception.handling.models.ValidationException;
@@ -30,7 +33,9 @@ import com.keycloak.dto.ErrorResponseDto;
 import com.keycloak.dto.KeycloakProperties;
 import com.keycloak.dto.LoginDto;
 import com.keycloak.dto.TokenResponseDto;
+import com.keycloak.dto.UserCredentialDTO;
 import com.keycloak.function.QuadConsumer;
+import com.keycloak.function.TriConsumer;
 import com.keycloak.function.TriFunction;
 
 @Component
@@ -134,6 +139,44 @@ public class KeycloakHandler {
 			if (statusCode < 200 || statusCode >= 300) {
 				throw new InternalException("Logout failed with status code: " + statusCode);
 			}
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
+	private final Function<String, JSONObject> createPasswordJson = password -> {
+		try {
+			JSONObject passwordJson = new JSONObject();
+			passwordJson.put(Constants.TYPE, Constants.PASSWORD);
+			passwordJson.put(Constants.VALUE, password);
+			passwordJson.put(Constants.TEMPORARY, false);
+			return passwordJson;
+		} catch (JSONException e) {
+			throw new InternalException(e);
+		}
+	};
+
+	public final TriConsumer<UserCredentialDTO, String, String> generateResetPassword = (userCredential, token,
+			userId) -> {
+		String realm = userCredential.getRealm();
+		String resetUrl = MessageFormat.format(keycloakProperties.getResetPasswordUrl(), realm, userId);
+		JSONObject passwordPayload = createPasswordJson.apply(userCredential.getPassword());
+		try {
+			HttpRequest request = HttpRequest.newBuilder().uri(new URI(resetUrl))
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
+					.header(Constants.AUTHORIZATION, Constants.BEARER + token)
+					.PUT(HttpRequest.BodyPublishers.ofString(passwordPayload.toString(), StandardCharsets.UTF_8))
+					.build();
+			HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				ObjectMapper objectMapper = new ObjectMapper();
+				String responseString = response.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getErrorDescription());
+			}
+		} catch (ValidationException ex) {
+			throw ex;
 		} catch (Exception e) {
 			throw new InternalException(e);
 		}

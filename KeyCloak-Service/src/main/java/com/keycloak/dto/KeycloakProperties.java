@@ -35,6 +35,10 @@ public class KeycloakProperties {
 	
 	private String logoutUrl;
 	
+	private String userNameUrl;
+	
+	private String resetPasswordUrl;
+	
 	@Data
     @NoArgsConstructor
     public static class AdminCredentials {
