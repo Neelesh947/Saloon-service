@@ -326,6 +326,27 @@ public class KeycloakHandler {
 		}
 	};
 
+	public final BiConsumer<String, String> deleteKeycloakUser = (userId, realm) -> {
+		String url = MessageFormat.format(keycloakProperties.getUserById(), realm, userId);
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			HttpRequest deleteRequest = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).DELETE().build();
+			HttpResponse<String> response = httpClient.send(deleteRequest, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				String responseString = response.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getErrorMessage());
+			}
+		} catch (ValidationException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
 	public final TriFunction<String, String, String, String> clientToken = (realm, realmClientId, clientSecret) -> {
 		String url = MessageFormat.format(keycloakProperties.getTokenUrl(), realm);
 		List<NameValuePair> body = Stream

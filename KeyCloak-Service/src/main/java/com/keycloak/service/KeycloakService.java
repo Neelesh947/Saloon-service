@@ -212,4 +212,10 @@ public class KeycloakService {
 	public final TriConsumer<UserRepresentation, String, String> updateUser = (userDTO, userId,
 			realm) -> keycloakHandler.updateKeycloakUser.accept(userDTO, userId, realm);
 
+	/**
+	 * Delete user
+	 */
+	public final BiConsumer<String, String> deleteUser = (userId, realm) -> keycloakHandler.deleteKeycloakUser
+			.accept(userId, realm);
+
 }
