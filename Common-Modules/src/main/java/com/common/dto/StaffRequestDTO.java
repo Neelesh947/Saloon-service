@@ -12,6 +12,9 @@ public class StaffRequestDTO {
 	private String name;
 	private String email;
 	private String phone;
-	private String keycloakUserId;
+	/**
+     * List of services assigned to this staff.
+     * These must exist in the service table in the DB.
+     */
 	private List<UUID> serviceIds;
 }

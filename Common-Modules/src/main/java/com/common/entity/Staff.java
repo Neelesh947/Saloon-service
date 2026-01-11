@@ -22,9 +22,13 @@ public class Staff extends BaseEntity {
     private String phone;
 
     @Column(nullable = false, unique = true)
-    private String keycloakUserId;
+    private String createdBy;
 
     // List of service IDs provided by this staff (microservice-friendly)
+    /**
+     * List of services assigned to this staff.
+     * These must exist in the service table in the DB.
+     */
     @ElementCollection
     @Column(name = "service_id")
     private List<UUID> serviceIds;
