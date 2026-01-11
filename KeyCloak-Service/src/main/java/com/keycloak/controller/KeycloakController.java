@@ -1,5 +1,7 @@
 package com.keycloak.controller;
 
+import java.util.List;
+
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -174,13 +176,25 @@ public class KeycloakController {
 			throw e;
 		}
 	}
-	
+
 	@GetMapping("/user/{userId}")
 	public UserRepresentation keycloakUserById(
 			@NotBlank(message = "User ID must not be null or empty") @PathVariable String userId,
 			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
 		try {
 			return keycloakService.userById.apply(userId, realm);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@GetMapping("/user/by/name/{userName}")
+	public List<UserRepresentation> keycloakUserByUsername(
+			@NotBlank(message = "Username must not be null or empty") @PathVariable String userName,
+			@RequestParam(required = false) String role,
+			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
+		try {
+			return keycloakService.userByNameAndRole.apply(userName, role, realm);
 		} catch (Exception e) {
 			throw e;
 		}

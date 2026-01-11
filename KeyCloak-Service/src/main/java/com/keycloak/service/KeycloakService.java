@@ -15,6 +15,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.exception.handling.models.NotFoundException;
 import com.exception.handling.models.ValidationException;
@@ -228,4 +229,14 @@ public class KeycloakService {
 				.orElseThrow(() -> new NotFoundException("Invalid User Id"));
 	};
 
+	/**
+	 * user by role and name
+	 */
+	public final TriFunction<String, String, String, List<UserRepresentation>> userByNameAndRole = (userName, role,
+			realm) -> {
+		String url = !ObjectUtils.isEmpty(role)
+				? MessageFormat.format(keycloakProperties.getUserByRoleUsername(), realm, userName, role)
+				: MessageFormat.format(keycloakProperties.getUserByUsername(), realm, userName);
+		return keycloakHandler.userDataDetails.apply(url);
+	};
 }
