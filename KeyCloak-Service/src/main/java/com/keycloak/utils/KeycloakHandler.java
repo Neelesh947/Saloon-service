@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.logging.log4j.util.InternalException;
+import org.keycloak.representations.idm.EventRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
@@ -369,6 +370,33 @@ public class KeycloakHandler {
 				UserRepresentation singleObject = objectMapper.readValue(responseString, UserRepresentation.class);
 				return Collections.singletonList(singleObject);
 			}
+		} catch (ValidationException ex) {
+			throw ex;
+		} catch (Exception e) {
+			throw new InternalException(e);
+		}
+	};
+
+	public final Function<String, List<EventRepresentation>> getLoginLogoutEvents = url -> {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(url))
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).GET().build();
+			HttpResponse<String> response = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
+			int statusCode = response.statusCode();
+			if (statusCode >= 400 && statusCode < 600) {
+				String responseString = response.body();
+				ErrorResponseDto errorResponse = objectMapper.readValue(responseString, ErrorResponseDto.class);
+				throw new ValidationException(errorResponse.getError());
+			}
+
+			String responseBody = response.body();
+			if (responseBody == null || responseBody.isEmpty()) {
+				return Collections.emptyList();
+			}
+			return objectMapper.readValue(responseBody, new TypeReference<List<EventRepresentation>>() {
+			});
 		} catch (ValidationException ex) {
 			throw ex;
 		} catch (Exception e) {

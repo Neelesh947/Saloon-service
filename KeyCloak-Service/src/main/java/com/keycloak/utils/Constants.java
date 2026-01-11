@@ -43,4 +43,10 @@ public final class Constants {
 	
 	public static final Object LOCATION_HEADER = "location";
 	public static final String USER_ID_REGEX = ".*/users/([a-fA-F0-9\\-]+)$";
+	
+	public static final String EMAIL = "email";
+	public static final String FIRSTNAME = "firstname";
+	public static final String LASTNAME = "lastname";
+	public static final String PHONENUMBER = "phonenumber";
+	public static final String COMPANYNAME = "companyname";
 }

@@ -1,7 +1,9 @@
 package com.keycloak.controller;
 
 import java.util.List;
+import java.util.Map;
 
+import org.keycloak.representations.idm.EventRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -207,6 +209,54 @@ public class KeycloakController {
 			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
 		try {
 			return keycloakService.userByEmailAndRole.apply(email, role, realm);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@GetMapping("/user/by/phone/{phone}/{role}")
+	public List<UserRepresentation> keycloakUserByPhone(
+			@NotBlank(message = "Phone must not be null or empty") @PathVariable String phone,
+			@NotBlank(message = "Role must not be null or empty") @PathVariable String role,
+			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
+		try {
+			return keycloakService.userByPhoneAndRole.apply(phone, role, realm);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@PostMapping("/users/by/role/{role}")
+	public List<UserRepresentation> keycloakUsersByRole(@RequestBody(required = false) Map<String, Object> searchParam,
+			@NotBlank(message = "Role must not be null or empty") @PathVariable String role,
+			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
+		String searchString = null;
+		try {
+			if (!searchParam.isEmpty()) {
+				searchString = (String) searchParam.getOrDefault("searchString", null);
+			}
+			return keycloakService.searchUser.apply(searchString, role, realm);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@GetMapping("/all/users/by/role/{role}")
+	public List<UserRepresentation> allRealmUsersByRole(
+			@NotBlank(message = "Role must not be null or empty") @PathVariable String role,
+			@PathVariable String realm) {
+		try {
+			return keycloakService.allUserByRole.apply(role); // Replace it with actual return
+		} catch (Exception e) {
+			throw e;
+		}
+	}
+
+	@GetMapping("/event/{userId}")
+	public List<EventRepresentation> getLoginAndLogoutEvent(@PathVariable String userId, @PathVariable String realm,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "20") int size) {
+		try {
+			return keycloakService.getLoginLogoutEvents.apply(userId, realm, page, size);
 		} catch (Exception e) {
 			throw e;
 		}

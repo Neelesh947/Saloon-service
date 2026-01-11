@@ -8,11 +8,14 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.logging.log4j.util.InternalException;
+import org.keycloak.representations.idm.EventRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -25,6 +28,7 @@ import com.keycloak.dto.KeycloakUserDto;
 import com.keycloak.dto.RoleRepresentationDTO;
 import com.keycloak.dto.TokenResponseDto;
 import com.keycloak.dto.UserCredentialDTO;
+import com.keycloak.function.QuadFunction;
 import com.keycloak.function.TriConsumer;
 import com.keycloak.function.TriFunction;
 import com.keycloak.utils.Constants;
@@ -239,12 +243,89 @@ public class KeycloakService {
 				: MessageFormat.format(keycloakProperties.getUserByUsername(), realm, userName);
 		return keycloakHandler.userDataDetails.apply(url);
 	};
-	
+
 	/**
 	 * user by email and role
 	 */
-	public final TriFunction<String, String, String, List<UserRepresentation>> userByEmailAndRole = (email, role, realm) -> {
-		String url  = MessageFormat.format(keycloakProperties.getUserByEmail(), realm, email, role);
+	public final TriFunction<String, String, String, List<UserRepresentation>> userByEmailAndRole = (email, role,
+			realm) -> {
+		String url = MessageFormat.format(keycloakProperties.getUserByEmail(), realm, email, role);
 		return keycloakHandler.userDataDetails.apply(url);
+	};
+
+	/**
+	 * user by role and phone number
+	 */
+	public final TriFunction<String, String, String, List<UserRepresentation>> userByPhoneAndRole = (phone, role,
+			realm) -> {
+		String url = MessageFormat.format(keycloakProperties.getUserByPhone(), realm, phone);
+		return keycloakHandler.userDataDetails.apply(url).stream()
+				.filter(user -> user.getAttributes() != null && user.getAttributes().get("roles").contains(role))
+				.toList();
+	};
+
+	/**
+	 * get all users
+	 */
+	public final Function<String, List<UserRepresentation>> allUserByRole = role -> keycloakProperties.getRealms()
+			.stream().flatMap(realm -> {
+				String maxInt = String.valueOf(Integer.MAX_VALUE).replace(",", "");
+				String url = MessageFormat.format(keycloakProperties.getUserByRole(), realm, role, maxInt);
+				try {
+					return keycloakHandler.userDataDetails.apply(url).stream();
+				} catch (Exception ex) {
+					throw new InternalException(ex);
+				}
+			}).toList();
+	/**
+	 * search user based on search criteria
+	 */
+	public final TriFunction<String, String, String, List<UserRepresentation>> searchUser = (request, role, realm) -> {
+		String maxInt = String.valueOf(Integer.MAX_VALUE).replace(",", "");
+		String url = MessageFormat.format(keycloakProperties.getUserByRole(), realm, role, maxInt);
+		List<UserRepresentation> users = keycloakHandler.userDataDetails.apply(url);
+		if (request != null) {
+			String[] searchPair = request.split(":");
+			if (searchPair.length < 2) {
+				throw new ValidationException("Invalid search string");
+			}
+			String searchKey = searchPair[0].toLowerCase();
+			String searchValue = searchPair[1].toLowerCase();
+			Map<String, Predicate<UserRepresentation>> searchOperations = Map.of(Constants.USERNAME,
+					ur -> ur.getUsername() != null && ur.getUsername().toLowerCase().contains(searchValue),
+					Constants.EMAIL, ur -> ur.getEmail() != null && ur.getEmail().toLowerCase().contains(searchValue),
+					Constants.FIRSTNAME,
+					ur -> ur.getFirstName() != null && ur.getFirstName().toLowerCase().contains(searchValue),
+					Constants.LASTNAME,
+					ur -> ur.getLastName() != null && ur.getLastName().toLowerCase().contains(searchValue),
+					Constants.PHONENUMBER,
+					ur -> Optional.ofNullable(ur.getAttributes().get(Constants.PHONENUMBER))
+							.flatMap(phoneNumbers -> phoneNumbers.stream().findFirst())
+							.map(phone -> phone.contains(searchValue)).orElse(false),
+					Constants.ENABLED,
+					ur -> ur.isEnabled() != null && ur.isEnabled().toString().equalsIgnoreCase(searchValue),
+					Constants.COMPANYNAME,
+					ur -> Optional.ofNullable(ur.getAttributes().get(Constants.COMPANYNAME))
+							.flatMap(companyNames -> companyNames.stream().findFirst())
+							.map(company -> company.toLowerCase().contains(searchValue)).orElse(false),
+					Constants.ASSIGNED_SENDERS,
+					ur -> Optional.ofNullable(ur.getAttributes().get(Constants.ASSIGNED_SENDERS))
+							.flatMap(assignedSenders -> assignedSenders.stream().findFirst())
+							.map(sender -> sender.toLowerCase().contains(searchValue)).orElse(false));
+			Predicate<UserRepresentation> defaultPredicate = ur -> false;
+			return users.stream().filter(searchOperations.getOrDefault(searchKey, defaultPredicate)).toList();
+		}
+		return users;
+	};
+
+	/**
+	 * Get login and logout events for a user with pagination.
+	 */
+	public final QuadFunction<String, String, Integer, Integer, List<EventRepresentation>> getLoginLogoutEvents = (
+			userId, realm, page, size) -> {
+		int first = page * size;
+		String url = MessageFormat.format(keycloakProperties.getEventUrl(), realm, userId, first, size);
+		List<EventRepresentation> events = keycloakHandler.getLoginLogoutEvents.apply(url);
+		return events;
 	};
 }
