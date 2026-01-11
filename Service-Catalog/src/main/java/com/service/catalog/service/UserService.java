@@ -1,11 +1,19 @@
 package com.service.catalog.service;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
+import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
+import com.common.dto.PaginatedResponse;
 import com.common.dto.UserRequestDTO;
+import com.common.dto.UserResponseDTO;
+import com.common.entity.UserServiceMapping;
 import com.common.utils.KeycloakUtility;
 import com.exception.handling.models.ValidationException;
 import com.service.catalog.repository.UserServiceMappingRepository;
@@ -54,5 +62,44 @@ public class UserService {
 				throw new ValidationException("Phone number already exists");
 			}
 		}
+	}
+
+	public PaginatedResponse<UserResponseDTO> getAllUsers(Map<String, Object> allParams, String realm) {
+		Object isEnabledObj = allParams.get("isEnabled");
+		String isEnabled = (isEnabledObj != null) ? isEnabledObj.toString().toUpperCase() : "ALL";
+		int page = allParams.containsKey("page") ? Integer.parseInt(allParams.get("page").toString()) : 0;
+		int size = allParams.containsKey("size") ? Integer.parseInt(allParams.get("size").toString()) : 10;
+		List<UserRepresentation> users = keycloakUtility.allUsersOfSpecificRoleAndRealm(USER_ROLE, allParams, realm);
+
+		if ("TRUE".equals(isEnabled)) {
+			users = users.stream().filter(UserRepresentation::isEnabled).toList();
+		} else if ("FALSE".equals(isEnabled)) {
+			users = users.stream().filter(user -> !user.isEnabled()).toList();
+		}
+		users = users.stream().sorted(Comparator
+				.comparing(UserRepresentation::getCreatedTimestamp, Comparator.nullsLast(Long::compareTo)).reversed())
+				.toList();
+		int fromIndex = Math.min(page * size, users.size());
+		int toIndex = Math.min(fromIndex + size, users.size());
+		List<UserRepresentation> paginatedUsers = users.subList(fromIndex, toIndex);
+		List<UserResponseDTO> responseList = paginatedUsers.stream().map(this::mapToUserResponseDTO)
+				.collect(Collectors.toList());
+
+		return new PaginatedResponse<>(responseList, users.size(), page, size);
+	}
+
+	private UserResponseDTO mapToUserResponseDTO(UserRepresentation user) {
+		UserResponseDTO dto = new UserResponseDTO();
+		dto.setKeycloakUserId(user.getId());
+		dto.setFirstName(user.getFirstName());
+		dto.setLastName(user.getLastName());
+		dto.setEmail(user.getEmail());
+//		dto.setPhone(user.getAttributes().get("phoneNumber"));
+
+		List<UserServiceMapping> mappings = serivceMappingRepository.findByLinkedUserId(user.getId());
+		List<UUID> serviceIds = mappings.stream().map(UserServiceMapping::getLinkedServiceId).toList();
+
+//		dto.setBookedServiceIds(bookedServiceIds);
+		return dto;
 	}
 }

@@ -1,7 +1,8 @@
 package com.common.dto;
 
 import java.util.List;
-import java.util.UUID;
+
+import com.common.entity.SaloonService;
 
 import lombok.Data;
 
@@ -13,5 +14,5 @@ public class UserResponseDTO {
 	private String lastName;
 	private String email;
 	private String phone;
-	private List<UUID> bookedServiceIds;
+	private List<SaloonService> bookedServiceIds;
 }
