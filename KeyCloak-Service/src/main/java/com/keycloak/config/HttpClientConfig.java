@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 public class HttpClientConfig {
 
 	@Bean
-	public HttpClient httpClient() {
+	HttpClient httpClient() {
 		return HttpClient.newBuilder().version(HttpClient.Version.HTTP_2).build();
 	}
 }

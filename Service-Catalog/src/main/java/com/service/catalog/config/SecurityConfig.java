@@ -50,7 +50,7 @@ public class SecurityConfig {
 	};
 
 	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.cors(cors -> cors.configure(http)) // Enable CORS using the new DSL
 				.csrf(csrf -> csrf.disable()) // Disable CSRF using the new DSL
 				.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -64,7 +64,7 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public JwtDecoder jwtDecoder() {
+	JwtDecoder jwtDecoder() {
 		return token -> {
 			HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 					.getRequest();
