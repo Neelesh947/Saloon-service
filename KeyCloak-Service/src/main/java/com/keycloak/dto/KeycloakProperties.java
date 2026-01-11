@@ -57,6 +57,8 @@ public class KeycloakProperties {
 
 	private String userByUsername;
 
+	private String userByEmail;
+	
 	@Data
 	@NoArgsConstructor
 	public static class AdminCredentials {

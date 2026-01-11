@@ -199,4 +199,16 @@ public class KeycloakController {
 			throw e;
 		}
 	}
+
+	@GetMapping("/user/by/email/{email}/{role}")
+	public List<UserRepresentation> keycloakUserByEmail(
+			@NotBlank(message = "Email must not be null or empty") @PathVariable String email,
+			@NotBlank(message = "Role must not be null or empty") @PathVariable String role,
+			@NotBlank(message = "Realm must not be null or empty") @PathVariable String realm) {
+		try {
+			return keycloakService.userByEmailAndRole.apply(email, role, realm);
+		} catch (Exception e) {
+			throw e;
+		}
+	}
 }

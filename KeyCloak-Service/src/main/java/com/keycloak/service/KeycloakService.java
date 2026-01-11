@@ -239,4 +239,12 @@ public class KeycloakService {
 				: MessageFormat.format(keycloakProperties.getUserByUsername(), realm, userName);
 		return keycloakHandler.userDataDetails.apply(url);
 	};
+	
+	/**
+	 * user by email and role
+	 */
+	public final TriFunction<String, String, String, List<UserRepresentation>> userByEmailAndRole = (email, role, realm) -> {
+		String url  = MessageFormat.format(keycloakProperties.getUserByEmail(), realm, email, role);
+		return keycloakHandler.userDataDetails.apply(url);
+	};
 }
