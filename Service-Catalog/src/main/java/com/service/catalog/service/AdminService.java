@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.keycloak.representations.idm.UserRepresentation;
+import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -13,6 +14,7 @@ import com.common.dto.PaginatedResponse;
 import com.common.utils.KeycloakUtility;
 import com.exception.handling.models.ValidationException;
 
+@Service
 public class AdminService {
 
 	private static final String ADMIN_ROLE = "ADMIN";
@@ -102,4 +104,37 @@ public class AdminService {
 		return new PaginatedResponse<>(paginatedAdmins, totalElements, page, size);
 	}
 
+	public Map<String, String> updateAdmin(String adminId, KeycloakuserDto dto, String superAdminId, String realm) {
+		UserRepresentation existingUser = getAdminById(adminId, realm);
+		mapDtoToUser(existingUser, dto);
+		keycloakUtility.updateUser(existingUser, adminId, realm);
+		return Map.of("status", "success", "message", "Admin updated successfully");
+	}
+
+	private void mapDtoToUser(UserRepresentation user, KeycloakuserDto dto) {
+		if (dto.getFirstName() != null)
+			user.setFirstName(dto.getFirstName());
+		if (dto.getLastName() != null)
+			user.setLastName(dto.getLastName());
+		if (dto.getEmail() != null)
+			user.setEmail(dto.getEmail());
+		if (dto.getUsername() != null)
+			user.setUsername(dto.getUsername());
+		if (dto.getAttributes() != null)
+			user.setAttributes(dto.getAttributes());
+	}
+
+	public Map<String, String> changeAdminStatus(String adminId, boolean enable, String realm) {
+		UserRepresentation user = getAdminById(adminId, realm);
+		user.setEnabled(enable);
+		keycloakUtility.updateUser(user, adminId, realm);
+		return Map.of("status", "success", "message", enable ? "Admin enabled" : "Admin disabled");
+	}
+
+	public Map<String, String> deleteAdmin(String adminId, String realm) {
+		UserRepresentation user = getAdminById(adminId, realm);
+		user.setEnabled(false);
+		keycloakUtility.updateUser(user, adminId, realm);
+		return Map.of("status", "success", "message", "Admin deleted successfully");
+	}
 }

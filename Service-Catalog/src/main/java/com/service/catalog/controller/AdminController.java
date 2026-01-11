@@ -6,9 +6,11 @@ import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -50,4 +52,24 @@ public class AdminController {
 		return ResponseEntity.ok(adminService.getAllAdmins(allParams, realm));
 	}
 
+	@PutMapping("/update/{adminId}")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
+	public ResponseEntity<Map<String, String>> updateAdmin(@PathVariable String adminId,
+			@RequestBody KeycloakuserDto adminRequestDto, @PathVariable String realm) {
+		String superAdminId = SecurityUtils.getCurrentUserIdSupplier.get();
+		return ResponseEntity.ok(adminService.updateAdmin(adminId, adminRequestDto, superAdminId, realm));
+	}
+
+	@PutMapping("/status/{adminId}")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
+	public ResponseEntity<Map<String, String>> changeAdminStatus(@PathVariable String adminId,
+			@RequestParam boolean enable, @PathVariable String realm) {
+		return ResponseEntity.ok(adminService.changeAdminStatus(adminId, enable, realm));
+	}
+
+	@DeleteMapping("/{adminId}")
+	@PreAuthorize("hasAuthority('SUPER_ADMIN')")
+	public ResponseEntity<Map<String, String>> deleteAdmin(@PathVariable String adminId, @PathVariable String realm) {
+		return ResponseEntity.ok(adminService.deleteAdmin(adminId, realm));
+	}
 }
