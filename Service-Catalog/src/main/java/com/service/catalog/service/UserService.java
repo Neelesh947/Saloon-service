@@ -170,7 +170,7 @@ public class UserService {
 //        List<UserServiceMapping> mappings = serivceMappingRepository.findByLinkedUserId(UUID.fromString(id));
 //        serivceMappingRepository.deleteAll(mappings);
 //        // Delete user from Keycloak
-////        keycloakUtility.deleteUser(id, realm);
+//        keycloakUtility.deleteUser(id, realm);
 //    }
 
 }
