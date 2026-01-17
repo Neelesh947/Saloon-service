@@ -11,5 +11,21 @@ keycloak:
   admin-credentials: 
     username: neelesh
     password: neelesh
-  user-name-url: http://localhost:8080/admin/realms/{0}/users
+  user-name-url: http://localhost:8080/admin/realms/{0}/users?username={1}&exact=true
   create-user-url: http://localhost:8080/admin/realms/{0}/users
+  clear-session-url: http://localhost:8080/admin/realms/{0}/users/{1}/logout
+  logout-url: http://localhost:8080/realms/{0}/protocol/openid-connect/logout
+  reset-password-url: http://localhost:8080/admin/realms/{0}/users/{1}/reset-password
+  update-password-lifespan: 1800
+  forgot-password-url: http://localhost:8080/admin/realms/Smartbox/users/{0}/execute-actions-email/?client_id={1}&lifespan={2}&redirect_uri={3}
+  update-password-redirect-uri: http://127.0.0.1:8080
+  all-users: http://localhost:8080/admin/realms/{0}/users
+  role-details: http://localhost:8080/admin/realms/{0}/roles/{1}
+  user-role-mappings: http://localhost:8080/admin/realms/{0}/users/{1}/role-mappings/realm
+  user-by-id: http://localhost:8080/admin/realms/{0}/users/{1}
+  user-by-role-username: http://localhost:8080/admin/realms/{0}/users?exact=true&username={1}&q=roles:{2}
+  user-by-username: http://localhost:8080/admin/realms/{0}/users?exact=true&username={1}
+  user-by-email: http://localhost:8080/admin/realms/{0}/users?exact=true&email={1}&q=roles:{2}
+  user-by-phone: http://localhost:8080/admin/realms/{0}/users?exact=true&q=phoneNumber:{1}
+  user-by-role: http://localhost:8080/admin/realms/{0}/roles/{1}/users?max={2}
+  event-url: http://localhost:8080/admin/realms/{0}/events?user={1}&first={2}&max={3}&type=LOGIN&type=LOGOUT

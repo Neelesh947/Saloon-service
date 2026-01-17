@@ -11,5 +11,5 @@ import com.common.entity.UserServiceMapping;
 @Repository
 public interface UserServiceMappingRepository extends JpaRepository<UserServiceMapping, UUID>{
 
-	List<UserServiceMapping> findByLinkedUserId(String userId);
+	List<UserServiceMapping> findByLinkedUserId(UUID userId);
 }

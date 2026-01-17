@@ -1,5 +1,5 @@
 package com.common.enums;
 
 public enum NotificationStatus {
-	PENDING, SENT, FAILED
+	PENDING, SENT, FAILED, RETRYING
 }

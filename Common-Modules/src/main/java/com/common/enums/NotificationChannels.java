@@ -1,5 +1,5 @@
 package com.common.enums;
 
 public enum NotificationChannels {
-	EMAIL, SMS
+	EMAIL, SMS, WHATSAPP
 }

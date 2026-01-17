@@ -1,6 +1,7 @@
 package com.common.dto;
 
 import java.util.List;
+import java.util.Map;
 
 import com.common.entity.SaloonService;
 
@@ -13,6 +14,6 @@ public class UserResponseDTO {
 	private String firstName;
 	private String lastName;
 	private String email;
-	private String phone;
+	private Map<String, List<String>> attributes;
 	private List<SaloonService> bookedServiceIds;
 }

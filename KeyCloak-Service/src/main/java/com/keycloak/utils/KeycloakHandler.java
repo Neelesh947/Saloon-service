@@ -353,7 +353,7 @@ public class KeycloakHandler {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(url))
-					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get().getAccessToken())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).GET().build();
 			HttpResponse<String> response = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
 			int statusCode = response.statusCode();

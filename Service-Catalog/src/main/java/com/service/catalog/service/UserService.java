@@ -13,6 +13,7 @@ import org.springframework.util.ObjectUtils;
 import com.common.dto.PaginatedResponse;
 import com.common.dto.UserRequestDTO;
 import com.common.dto.UserResponseDTO;
+import com.common.entity.SaloonService;
 import com.common.entity.UserServiceMapping;
 import com.common.utils.KeycloakUtility;
 import com.exception.handling.models.ValidationException;
@@ -94,12 +95,12 @@ public class UserService {
 		dto.setFirstName(user.getFirstName());
 		dto.setLastName(user.getLastName());
 		dto.setEmail(user.getEmail());
-//		dto.setPhone(user.getAttributes().get("phoneNumber"));
+		dto.setAttributes(user.getAttributes());
 
-		List<UserServiceMapping> mappings = serivceMappingRepository.findByLinkedUserId(user.getId());
-		List<UUID> serviceIds = mappings.stream().map(UserServiceMapping::getLinkedServiceId).toList();
+		List<UserServiceMapping> mappings = serivceMappingRepository.findByLinkedUserId(UUID.fromString(user.getId()));
+		List<SaloonService> serviceIds = mappings.stream().map(UserServiceMapping::getLinkedServiceId).toList();
 
-//		dto.setBookedServiceIds(bookedServiceIds);
+		dto.setBookedServiceIds(serviceIds);
 		return dto;
 	}
 }

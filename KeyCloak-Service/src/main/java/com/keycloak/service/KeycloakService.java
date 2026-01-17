@@ -50,7 +50,7 @@ public class KeycloakService {
 	}
 
 	private final Function<UserCredentialDTO, String> loginURL = userCredential -> {
-		String url = keycloakProperties.getTokenUrl();
+		String url = keycloakProperties.getUserNameUrl();
 		return MessageFormat.format(url, userCredential.getRealm(), userCredential.getUserName());
 	};
 
@@ -93,7 +93,7 @@ public class KeycloakService {
 	};
 
 	/**
-	 * Regular login username password or one code/QR
+	 * Regular login username password
 	 */
 	private final BiFunction<UserCredentialDTO, String, TokenResponseDto> standardLogin = (userCredentials, url) -> {
 		String realm = userCredentials.getRealm();
@@ -110,8 +110,7 @@ public class KeycloakService {
 	 */
 	public final Function<UserCredentialDTO, TokenResponseDto> loginUser = userCredential -> {
 		String url = loginURL.apply(userCredential);
-		TokenResponseDto response;
-		response = standardLogin.apply(userCredential, url);
+		TokenResponseDto response = standardLogin.apply(userCredential, url);
 		return response;
 	};
 
