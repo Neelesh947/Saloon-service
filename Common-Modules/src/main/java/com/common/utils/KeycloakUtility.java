@@ -61,7 +61,7 @@ public class KeycloakUtility {
 	}
 
 	public List<UserRepresentation> userByPhoneAndRole(String phoneNumber, String role, String realm) {
-		String urlEndpoint = keycloakUrl + realm + "/keycloak/user/by/phone" + phoneNumber + "/" + role;
+		String urlEndpoint = keycloakUrl + realm + "/keycloak/user/by/phone/" + phoneNumber + "/" + role;
 		try {
 			ResponseEntity<List<UserRepresentation>> response = restTemplate.exchange(urlEndpoint, HttpMethod.GET, null,
 					new ParameterizedTypeReference<List<UserRepresentation>>() {

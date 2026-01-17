@@ -1,8 +1,10 @@
 package com.service.catalog.service;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -140,14 +142,19 @@ public class UserService {
 			}
 			existingUser.setEmail(dto.getEmail());
 		}
+		Map<String, List<String>> attributes = Optional.ofNullable(existingUser.getAttributes())
+				.orElseGet(HashMap::new);
 		if (!ObjectUtils.isEmpty(dto.getPhone())) {
 			List<UserRepresentation> phoneUsers = keycloakUtility.userByPhoneAndRole(dto.getPhone(), USER_ROLE, realm);
 			if (!phoneUsers.isEmpty() && !phoneUsers.get(0).getId().equals(id)) {
 				throw new ValidationException("Phone number already exists");
 			}
-			existingUser.getAttributes().put("phone", List.of(dto.getPhone()));
+			attributes.put("phoneNumber", List.of(dto.getPhone()));
 		}
-
+		if (!ObjectUtils.isEmpty(dto.getAddress())) {
+			attributes.put("address", List.of(dto.getAddress()));
+		}
+		existingUser.setAttributes(attributes);
 		if (!ObjectUtils.isEmpty(dto.getFirstName())) {
 			existingUser.setFirstName(dto.getFirstName());
 		}
@@ -157,7 +164,7 @@ public class UserService {
 		keycloakUtility.updateUser(existingUser, id, realm);
 		return mapToUserResponseDTO(keycloakUtility.userById(id, realm));
 	}
-	
+
 //	public void deleteUser(String id, String realm) {
 //        if (ObjectUtils.isEmpty(id)) {
 //            throw new ValidationException("User ID is required");

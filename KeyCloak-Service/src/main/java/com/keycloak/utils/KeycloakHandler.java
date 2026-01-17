@@ -311,7 +311,7 @@ public class KeycloakHandler {
 		try {
 			String requestJson = objectMapper.writeValueAsString(userRepresentation);
 			HttpRequest putRequest = HttpRequest.newBuilder().uri(new URI(url))
-					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get().getAccessToken())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
 					.PUT(HttpRequest.BodyPublishers.ofString(requestJson)).build();
 			HttpResponse<String> response = httpClient.send(putRequest, HttpResponse.BodyHandlers.ofString());

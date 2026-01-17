@@ -190,7 +190,7 @@ public class KeycloakController {
 		}
 	}
 
-	@GetMapping("/user/by/name/{userName}")
+	@GetMapping("/user/by/username/{userName}")
 	public List<UserRepresentation> keycloakUserByUsername(
 			@NotBlank(message = "Username must not be null or empty") @PathVariable String userName,
 			@RequestParam(required = false) String role,
