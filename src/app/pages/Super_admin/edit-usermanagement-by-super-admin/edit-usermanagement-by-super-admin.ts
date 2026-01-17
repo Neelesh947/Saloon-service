@@ -104,6 +104,6 @@ export class EditUsermanagementBySuperAdmin implements OnInit {
     })
   }
   cancel() {
-    this.router.navigate(['/user-management']);
+    this.router.navigate(['super-admin-dashboard/user-management']);
   }
 }
