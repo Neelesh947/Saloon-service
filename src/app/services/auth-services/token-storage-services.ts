@@ -65,4 +65,17 @@ export class TokenStorageService {
   clear(): void {
     sessionStorage.clear();
   }
+
+  getRefreshToken(): string | null {
+    const loginData = sessionStorage.getItem(this.LOGIN_DATA_KEY);
+    if (!loginData) return null;
+
+    try {
+      const parsed = JSON.parse(loginData);
+      return parsed.refresh_token || null;
+    } catch (e) {
+      console.error('Failed to parse login data', e);
+      return null;
+    }
+  }
 }
