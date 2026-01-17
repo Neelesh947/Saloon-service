@@ -38,4 +38,9 @@ public class UserController {
 		return ResponseEntity.ok(userService.getAllUsers(allParams, realm));
 	}
 
+	@GetMapping("/by-id/{id}")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
+	public ResponseEntity<UserResponseDTO> getUserById(@PathVariable String id, @PathVariable String realm) {
+		return ResponseEntity.ok(userService.getUserById(id, realm));
+	}
 }

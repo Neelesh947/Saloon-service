@@ -103,4 +103,74 @@ public class UserService {
 		dto.setBookedServiceIds(serviceIds);
 		return dto;
 	}
+
+	public UserResponseDTO getUserById(String id, String realm) {
+		if (ObjectUtils.isEmpty(id)) {
+			throw new ValidationException("User ID is required");
+		}
+		UserRepresentation user = keycloakUtility.userById(id, realm);
+		if (user == null) {
+			throw new ValidationException("User not found with ID: " + id);
+		}
+		return mapToUserResponseDTO(user);
+	}
+
+	public UserResponseDTO updateUser(String id, UserRequestDTO dto, String realm) {
+		if (ObjectUtils.isEmpty(id)) {
+			throw new ValidationException("User ID is required");
+		}
+		if (dto == null) {
+			throw new ValidationException("Request body is required");
+		}
+		UserRepresentation existingUser = keycloakUtility.userById(id, realm);
+		if (existingUser == null) {
+			throw new ValidationException("User not found with ID: " + id);
+		}
+
+		if (!ObjectUtils.isEmpty(dto.getUsername()) && !dto.getUsername().equals(existingUser.getUsername())) {
+			if (!keycloakUtility.userByUsername(dto.getUsername(), USER_ROLE, realm).isEmpty()) {
+				throw new ValidationException("Username already exists");
+			}
+			existingUser.setUsername(dto.getUsername());
+		}
+		if (!ObjectUtils.isEmpty(dto.getEmail()) && !dto.getEmail().equals(existingUser.getEmail())) {
+			if (!keycloakUtility.userByEmailAndRole(dto.getEmail(), USER_ROLE, realm).isEmpty()) {
+				throw new ValidationException("Email already exists");
+			}
+			existingUser.setEmail(dto.getEmail());
+		}
+		if (!ObjectUtils.isEmpty(dto.getPhone())) {
+			List<UserRepresentation> phoneUsers = keycloakUtility.userByPhoneAndRole(dto.getPhone(), USER_ROLE, realm);
+			if (!phoneUsers.isEmpty() && !phoneUsers.get(0).getId().equals(id)) {
+				throw new ValidationException("Phone number already exists");
+			}
+			existingUser.getAttributes().put("phone", List.of(dto.getPhone()));
+		}
+
+		if (!ObjectUtils.isEmpty(dto.getFirstName())) {
+			existingUser.setFirstName(dto.getFirstName());
+		}
+		if (!ObjectUtils.isEmpty(dto.getLastName())) {
+			existingUser.setLastName(dto.getLastName());
+		}
+		keycloakUtility.updateUser(existingUser, id, realm);
+		return mapToUserResponseDTO(keycloakUtility.userById(id, realm));
+	}
+	
+//	public void deleteUser(String id, String realm) {
+//        if (ObjectUtils.isEmpty(id)) {
+//            throw new ValidationException("User ID is required");
+//        }
+//
+//        UserRepresentation user = keycloakUtility.userById(id, realm);
+//        if (user == null) {
+//            throw new ValidationException("User not found with ID: " + id);
+//        }
+//
+//        List<UserServiceMapping> mappings = serivceMappingRepository.findByLinkedUserId(UUID.fromString(id));
+//        serivceMappingRepository.deleteAll(mappings);
+//        // Delete user from Keycloak
+////        keycloakUtility.deleteUser(id, realm);
+//    }
+
 }
