@@ -96,6 +96,7 @@ public class UserService {
 		dto.setLastName(user.getLastName());
 		dto.setEmail(user.getEmail());
 		dto.setAttributes(user.getAttributes());
+		dto.setEnable(user.isEnabled());
 
 		List<UserServiceMapping> mappings = serivceMappingRepository.findByLinkedUserId(UUID.fromString(user.getId()));
 		List<SaloonService> serviceIds = mappings.stream().map(UserServiceMapping::getLinkedServiceId).toList();
