@@ -27,6 +27,7 @@ import { AdminAnalytics } from './pages/Admin/admin-analytics/admin-analytics';
 import { AdminList } from './pages/Super_admin/admin-list/admin-list';
 import { CreateAdmin } from './pages/Super_admin/create-admin/create-admin';
 import { EditAdmin } from './pages/Super_admin/edit-admin/edit-admin';
+import { EditUsermanagementBySuperAdmin } from './pages/Super_admin/edit-usermanagement-by-super-admin/edit-usermanagement-by-super-admin';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
@@ -40,6 +41,7 @@ export const routes: Routes = [
             { path: 'edit-saloon-management-admin/:id', component: EditSaloonSuperAdmin },
             { path: 'super-admin-analytics', component: AnalyticsDashboardSuperAdmin },
             { path: 'user-management', component: UserManagementBySuperAdmin },
+            { path: 'edit-user-management/:id', component: EditUsermanagementBySuperAdmin },
             { path: 'staff-management', component: StaffmanagementBySuperAdmin },
             { path: 'serivce-management', component: ServiceManagementBySuperAdmin },
             { path: 'admin-list', component: AdminList },

@@ -60,7 +60,7 @@
                             <td>{{ i + 1 }}</td>
 
                             <td class="fw-semibold"
-                                [routerLink]="['/super-admin-dashboard/edit-saloon-management-admin', user.keycloakUserId]">
+                                [routerLink]="['/super-admin-dashboard/edit-user-management', user.keycloakUserId]">
                                 {{ user.firstName }}
                             </td>
 
@@ -88,7 +88,7 @@
 
                             <td class="text-center">
                                 <button class="btn btn-sm btn-outline-primary me-1" title="Edit User"
-                                    [routerLink]="['/super-admin-dashboard/edit-saloon-management-admin', user.keycloakUserId]">
+                                    [routerLink]="['/super-admin-dashboard/edit-user-management', user.keycloakUserId]">
                                     <i class="bi bi-eye"></i>
                                 </button>
 

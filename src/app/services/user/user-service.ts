@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { UserResponseDTO } from '../DTOs/user-response-dto';
 import { Observable } from 'rxjs';
 import { PaginatedResponse } from '../DTOs/paginated-response';
+import { UserRequestDTO } from '../DTOs/user-request-dto';
 
 @Injectable({
   providedIn: 'root',
@@ -32,5 +33,15 @@ export class UserService {
       params = params.set('isEnabled', isEnabled.toString());
     }
     return this.http.get<PaginatedResponse<UserResponseDTO>>(`${this.baseUrl}/list`, { params, headers: this.getAuthHeaders() });
+  }
+
+  getUserById(id: string): Observable<UserResponseDTO> {
+    const url = `${this.baseUrl}/by-id/${id}`;
+    return this.http.get<UserResponseDTO>(url, { headers: this.getAuthHeaders() });
+  }
+
+  updateUser(id: string, request: UserRequestDTO): Observable<UserResponseDTO> {
+    const url = `${this.baseUrl}/update-user/${id}`;
+    return this.http.put<UserResponseDTO>(url, request, { headers: this.getAuthHeaders() });
   }
 }
