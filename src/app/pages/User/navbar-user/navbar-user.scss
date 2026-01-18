@@ -1,0 +1,22 @@
+/* Make navbar links show pointer on hover */
+.navbar-nav .nav-link {
+    cursor: pointer;
+    color: white;
+    /* default link color */
+    transition: color 0.3s, border-bottom 0.3s;
+}
+
+/* Active tab style */
+.navbar-nav .nav-link.active-link {
+    font-weight: bold;
+    color: #ffc107;
+    /* highlight color */
+    border-bottom: 2px solid #ffc107;
+    /* underline effect */
+}
+
+/* Hover effect for links */
+.navbar-nav .nav-link:hover {
+    color: #ffd966;
+    /* slightly lighter on hover */
+}

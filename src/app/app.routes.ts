@@ -29,6 +29,8 @@ import { CreateAdmin } from './pages/Super_admin/create-admin/create-admin';
 import { EditAdmin } from './pages/Super_admin/edit-admin/edit-admin';
 import { EditUsermanagementBySuperAdmin } from './pages/Super_admin/edit-usermanagement-by-super-admin/edit-usermanagement-by-super-admin';
 import { NavbarUser } from './pages/User/navbar-user/navbar-user';
+import { SaloonListComponent } from './pages/User/saloon-list-component/saloon-list-component';
+import { ServiceListComponent } from './pages/User/service-list-component/service-list-component';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
@@ -70,7 +72,9 @@ export const routes: Routes = [
     {
         path: 'user-dashboard', component: UserDashboard,
         children: [
-            { path: '', component: NavbarUser }
+            // { path: '', component: NavbarUser },
+            { path: 'saloons', component: SaloonListComponent },
+            { path: 'service', component: ServiceListComponent }
         ]
     },
 ];

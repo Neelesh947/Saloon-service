@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-navbar-user',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterModule],
   templateUrl: './navbar-user.html',
   styleUrl: './navbar-user.scss',
 })
