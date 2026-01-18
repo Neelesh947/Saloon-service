@@ -12,7 +12,7 @@
 
 <div class="sidebar" [class.closed]="isClosed">
   <div class="sidebar-header">
-    <h3>SuperAdmin</h3>
+    <h3>{{userName}}</h3>
     <button class="btn-toggle" (click)="toggleSidebar()">☰</button>
   </div>
 
@@ -30,7 +30,7 @@
     <li>
       <a [routerLink]="['/admin-dashboard/saloon-list-by-admin']">
         <i class="bi bi-building"></i>
-        <span>Saloon Management</span>
+        <span>Profile Management</span>
       </a>
     </li>
     <li>
