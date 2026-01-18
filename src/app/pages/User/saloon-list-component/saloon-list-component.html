@@ -1,1 +1,81 @@
-<p>saloon-list-component works!</p>
+<div class="container-fluid saloon-page">
+
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <h4 class="fw-bold mb-0">
+      Available Saloons
+    </h4>
+
+    <span class="text-muted">
+      {{ pageInfo.totalElements }} Saloons Found
+    </span>
+  </div>
+
+  <!-- Saloon Cards -->
+  <div class="row g-4">
+    <div
+      class="col-xl-3 col-lg-4 col-md-6 col-sm-12"
+      *ngFor="let saloon of saloons"
+    >
+      <div class="card saloon-card h-100">
+
+        <div class="card-body">
+          <h5 class="card-title fw-bold mb-2">
+            {{ saloon.saloonName }}
+          </h5>
+
+          <p class="text-muted mb-2">
+            <i class="bi bi-geo-alt-fill me-1"></i>
+            {{ saloon.address }}
+          </p>
+
+          <p class="mb-3">
+            <i class="bi bi-telephone-fill me-1"></i>
+            {{ saloon.phone }}
+          </p>
+
+          <span class="badge bg-success">
+            Active
+          </span>
+        </div>
+
+        <div class="card-footer bg-transparent border-0 pt-0">
+          <button class="btn btn-primary w-100 rounded-pill">
+            View Services
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="saloons.length === 0" class="text-center mt-5">
+    <i class="bi bi-shop fs-1 text-muted"></i>
+    <p class="mt-3 text-muted">No saloons available</p>
+  </div>
+
+  <!-- Pagination -->
+  <div class="d-flex justify-content-center align-items-center mt-5 gap-3">
+    <button
+      class="btn btn-outline-primary"
+      [disabled]="isFirstPage"
+      (click)="goToPreviousPage()"
+    >
+      <i class="bi bi-chevron-left"></i> Previous
+    </button>
+
+    <span class="fw-semibold">
+      Page {{ pageInfo.pageNumber + 1 }} of {{ totalPages }}
+    </span>
+
+    <button
+      class="btn btn-outline-primary"
+      [disabled]="isLastPage"
+      (click)="goToNextPage()"
+    >
+      Next <i class="bi bi-chevron-right"></i>
+    </button>
+  </div>
+
+</div>

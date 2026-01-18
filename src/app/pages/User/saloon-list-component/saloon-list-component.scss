@@ -1,0 +1,44 @@
+.saloon-page {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 100%;
+}
+
+/* Card Styling */
+.saloon-card {
+  border-radius: 16px;
+  border: none;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.saloon-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Icons */
+.bi {
+  color: #0d6efd;
+}
+
+/* Card title height consistency */
+.card-title {
+  min-height: 48px;
+}
+
+/* Button */
+.card-footer button {
+  font-weight: 500;
+}
+
+/* Pagination */
+button[disabled] {
+  cursor: not-allowed;
+}
+
+/* Mobile spacing */
+@media (max-width: 576px) {
+  .saloon-page {
+    padding: 16px;
+  }
+}
