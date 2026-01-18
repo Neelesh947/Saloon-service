@@ -7,7 +7,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-service-list-admin',
-  imports: [FormsModule, CommonModule, RouterModule, NgIf],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './service-list-admin.html',
   styleUrl: './service-list-admin.scss',
 })
