@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { Router, RouterModule } from "@angular/router";
 import { NavbarUser } from "../navbar-user/navbar-user";
 import { FormsModule } from '@angular/forms';
+import { TokenStorageService } from '../../../services/auth-services/token-storage-services';
+import { LoginServices } from '../../../services/auth-services/login-services';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -19,9 +21,29 @@ export class UserDashboard {
     { id: 3, message: 'Booking reminder' }
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private login_service: LoginServices, private token_storgae: TokenStorageService) { }
 
-  logout() {}
-  openNotifications(){}
-  onSearch()  {}
+  logout() {
+    const realm = 'Saloon';
+    const refreshToken = this.token_storgae.getRefreshToken();
+
+    if (!refreshToken) {
+      this.token_storgae.clear();
+      this.router.navigate(['/']);
+      return;
+    }
+    this.login_service.logout(realm).subscribe({
+      next: () => {
+        this.token_storgae.clear();
+        this.router.navigate(['/']);
+      },
+      error: (err) => {
+        console.error('Logout failed', err);
+        this.token_storgae.clear();
+        this.router.navigate(['/']);
+      }
+    });
+  }
+  openNotifications() { }
+  onSearch() { }
 }
