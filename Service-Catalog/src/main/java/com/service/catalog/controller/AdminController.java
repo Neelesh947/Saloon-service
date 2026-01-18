@@ -27,6 +27,8 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/{realm}/Admin")
 @RequiredArgsConstructor
 public class AdminController {
+	
+	// this class is admin means saloon and it is created on keycloak.
 
 	private final AdminService adminService;
 

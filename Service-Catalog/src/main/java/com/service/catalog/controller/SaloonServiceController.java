@@ -48,8 +48,10 @@ public class SaloonServiceController {
 		return ResponseEntity.ok(serviceCatalogService.getServiceById(serviceId));
 	}
 
-	@GetMapping("/salon/{salonId}")
-	public ResponseEntity<List<SaloonServiceDTO>> getServicesBySalon(@PathVariable UUID salonId) {
+	@GetMapping("/salon")
+	public ResponseEntity<List<SaloonServiceDTO>> getServicesBySalon() {
+		String salonIdsFormToken = SecurityUtils.getCurrentUserIdSupplier.get();
+		UUID salonId = UUID.fromString(salonIdsFormToken);
 		return ResponseEntity.ok(serviceCatalogService.getServicesBySalon(salonId));
 	}
 
@@ -60,11 +62,11 @@ public class SaloonServiceController {
 		SaloonServiceDTO updatedService = serviceCatalogService.updateService(serviceId, updateServiceDTO);
 		return ResponseEntity.ok(updatedService);
 	}
-	
+
 	@DeleteMapping("/{serviceId}")
 	@PreAuthorize("hasAnyAuthority('ADMIN', 'SUPER_ADMIN')")
-    public ResponseEntity<Void> deleteService(@PathVariable UUID serviceId) {
+	public ResponseEntity<Void> deleteService(@PathVariable UUID serviceId) {
 		serviceCatalogService.deleteService(serviceId);
-        return ResponseEntity.noContent().build();
-    }
+		return ResponseEntity.noContent().build();
+	}
 }
