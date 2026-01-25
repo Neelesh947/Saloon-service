@@ -228,7 +228,7 @@ public class KeycloakHandler {
 			objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 			String json = objectMapper.writeValueAsString(userRepresentation);
 			HttpRequest request = HttpRequest.newBuilder().uri(new URI(url))
-					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get().getAccessToken())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
 					.POST(HttpRequest.BodyPublishers.ofString(json, StandardCharsets.UTF_8)).build();
 			HttpResponse<String> keycloakResponse = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -262,7 +262,7 @@ public class KeycloakHandler {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(url))
-					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get().getAccessToken())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).GET().build();
 			HttpResponse<String> response = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
 			int statusCode = response.statusCode();
@@ -286,7 +286,7 @@ public class KeycloakHandler {
 		try {
 			String jsonRoles = objectMapper.writeValueAsString(roles);
 			HttpRequest postRequest = HttpRequest.newBuilder().uri(new URI(url))
-					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get().getAccessToken())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON)
 					.POST(HttpRequest.BodyPublishers.ofString(jsonRoles)).build();
 			HttpResponse<String> response = httpClient.send(postRequest, HttpResponse.BodyHandlers.ofString());
@@ -333,7 +333,7 @@ public class KeycloakHandler {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			HttpRequest deleteRequest = HttpRequest.newBuilder().uri(new URI(url))
-					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get().getAccessToken())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).DELETE().build();
 			HttpResponse<String> response = httpClient.send(deleteRequest, HttpResponse.BodyHandlers.ofString());
 			int statusCode = response.statusCode();
@@ -381,7 +381,7 @@ public class KeycloakHandler {
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(url))
-					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get())
+					.header(Constants.AUTHORIZATION, Constants.BEARER + accessTokenAdminCli.get().getAccessToken())
 					.header(Constants.CONTENT_TYPE, Constants.APPLICATION_JSON).GET().build();
 			HttpResponse<String> response = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
 			int statusCode = response.statusCode();

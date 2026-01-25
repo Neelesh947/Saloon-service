@@ -1,15 +1,12 @@
 package com.common.dto;
 
-import java.util.List;
-import java.util.Map;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 public class KeycloakuserDto {
 
 	@NotBlank(message = "Username is required")
@@ -17,11 +14,13 @@ public class KeycloakuserDto {
 	
 	@NotBlank(message = "Email is required")
 	@Email(message = "Email format is invalid")
-	private String email;
-	
+	private String emailAddress;
+	private String password;
 	private String firstName;
 	private String lastName;
-	private boolean isEnabled;
-	private List<Credentials> credentials;
-	private Map<String, List<String>> attributes;
+	private boolean enabled;
+	private String phoneNumber;
+	private String address;
+	private String createdBy;
+	
 }
