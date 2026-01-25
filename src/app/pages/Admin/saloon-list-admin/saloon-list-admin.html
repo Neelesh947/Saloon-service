@@ -3,133 +3,74 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Saloon-List</title>
+  <title>Profile Management</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<div class="container-fluid mt-4">
-
-  <!-- Page Header -->
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h4 class="fw-bold">Saloon List</h4>
-    <button class="btn btn-primary" [routerLink]="['/super-admin-dashboard/add-saloon-management-admin']">
-      <i class="bi bi-plus-circle me-1"></i> Add New Saloon
-    </button>
-  </div>
-
-  <!-- Card Wrapper -->
-  <div class="card shadow-sm">
-    <div class="card-body">
-
-      <!-- Filters -->
-      <div class="row mb-3">
-        <div class="col-md-4">
-          <input type="text" class="form-control" placeholder="Search by Saloon Name..." />
-        </div>
-
-        <div class="col-md-3">
-          <select class="form-select" [(ngModel)]="statusFilter" (change)="onStatusChange()">
-            <option value="">All Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
-        </div>
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="card shadow-sm p-4" style="max-width: 900px; width: 100%; border-radius: 10px;">
+    <div class="col-md-12" *ngFor="let salon of saloons">
+      <div class="card-header bg-primary text-white mb-4 rounded">
+        <h4 class="mb-0">{{ salon.saloonName }}</h4>
       </div>
+      <div class="row gx-5">
+        <!-- Left Column: Profile Info -->
+        <div class="col-md-7">
+          <!-- Only render form if profileForms[salon.id] exists -->
+          <form *ngIf="profileForms[salon.id]" [formGroup]="profileForms[salon.id]">
+            <div class="row mb-3">
+              <div class="col-6">
+                <label class="form-label fw-semibold">Saloon Name</label>
+                <input type="text" class="form-control" formControlName="saloonName" placeholder="Enter Saloon Name" />
+              </div>
+              <div class="col-6">
+                <label class="form-label fw-semibold">Phone</label>
+                <input type="text" class="form-control" formControlName="phone" placeholder="Enter Phone Number" />
+              </div>
+            </div>
 
-      <!-- Saloon Table -->
-      <div class="table-responsive">
-        <table class="table table-hover align-middle">
-          <thead class="table-light">
-            <tr>
-              <th>#</th>
-              <th>Saloon Name</th>
-              <th>Address</th>
-              <th>Phone</th>
-              <th>Status</th>
-              <th>Created At</th>
-              <th class="text-center">Actions</th>
-            </tr>
-          </thead>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Address</label>
+              <textarea class="form-control" formControlName="address" rows="3" placeholder="Enter Address"></textarea>
+            </div>
 
-          <tbody>
-            <tr *ngFor="let saloon of saloons; let i = index">
-              <td>{{ i + 1 }}</td>
-
-              <td class="fw-semibold" [routerLink]="['/super-admin-dashboard/edit-saloon-management-admin', saloon.id]">
-                {{ saloon.saloonName }}
-              </td>
-
-              <td class="text-muted">
-                {{ saloon.address }}
-              </td>
-
-              <td>
-                {{ saloon.phone }}
-              </td>
-
-              <td>
-                <span class="badge" [ngClass]="saloon.active ? 'bg-success' : 'bg-danger'">
-                  {{ saloon.active ? 'Active' : 'Inactive' }}
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Services</label>
+              <div class="d-flex flex-wrap gap-2">
+                <span *ngFor="let service of salon.services" class="badge bg-info text-dark px-3 py-2 rounded-pill">
+                  {{ service.name }}
                 </span>
-              </td>
+              </div>
+            </div>
 
-              <td>
-                {{ saloon.createdAt | date:'mediumDate' }}
-              </td>
+            <button type="button" class="btn btn-success mt-3 px-4" (click)="saveProfile(salon.id)">
+              Save Profile
+            </button>
+          </form>
+        </div>
 
-              <td class="text-center">
-                <button class="btn btn-sm btn-outline-primary me-1" title="Edit User"
-                  [routerLink]="['/super-admin-dashboard/edit-saloon-management-admin', saloon.id]">
-                  <i class="bi bi-eye"></i>
-                </button>
-
-                <button class="btn btn-sm me-1"
-                  [ngClass]="saloon.active ? 'btn-outline-warning' : 'btn-outline-success'"
-                  [title]="saloon.active ? 'Inactivate User' : 'Activate User'" (click)="dissableEnableUser(saloon)">
-                  <i class="bi" [ngClass]="saloon.active ? 'bi-slash-circle' : 'bi-check-circle'"></i>
-                </button>
-
-
-                <button class="btn btn-sm btn-outline-danger" title="Delete User" (click)="deleteUser(saloon)">
-                  <i class="bi bi-slash-circle"></i>
-                </button>
-              </td>
-            </tr>
-
-            <!-- Empty State -->
-            <tr *ngIf="saloons.length === 0">
-              <td colspan="7" class="text-center text-muted py-4">
-                No saloons found.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Pagination -->
-      <div class="d-flex justify-content-between align-items-center mt-3">
-        <span class="text-muted">
-          Showing {{ pageInfo.pageSize }} of {{ pageInfo.totalElements }} saloons
-        </span>
-
-        <nav>
-          <ul class="pagination pagination-sm mb-0">
-            <li class="page-item" [class.disabled]="isFirstPage">
-              <a class="page-link" href="javascript:void(0)" (click)="goToPreviousPage()">Previous</a>
-            </li>
-
-            <li class="page-item active">
-              <a class="page-link" href="javascript:void(0)">{{ pageInfo.pageNumber + 1 }}</a>
-            </li>
-
-            <li class="page-item" [class.disabled]="isLastPage">
-              <a class="page-link" href="javascript:void(0)" (click)="goToNextPage()">Next</a>
-            </li>
-          </ul>
-        </nav>
+        <!-- Right Column: Password Update -->
+        <div class="col-md-5 border-start ps-4">
+          <h5 class="mb-4 fw-bold">Update Password</h5>
+          <!-- Only render form if passwordForms[salon.id] exists -->
+          <form *ngIf="passwordForms[salon.id]" [formGroup]="passwordForms[salon.id]">
+            <div class="mb-3">
+              <label class="form-label fw-semibold">New Password</label>
+              <input type="password" class="form-control" formControlName="newPassword" placeholder="New Password" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label fw-semibold">Confirm Password</label>
+              <input type="password" class="form-control" formControlName="confirmPassword"
+                placeholder="Confirm Password" />
+            </div>
+            <button type="button" class="btn btn-warning mt-2 px-4" (click)="updatePassword(salon.id)">
+              Update Password
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

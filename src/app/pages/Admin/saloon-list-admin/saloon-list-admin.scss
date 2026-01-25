@@ -1,29 +1,25 @@
 .card {
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
-.table th {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-}
-
-.table td {
-  vertical-align: middle;
-}
-
-.badge {
-  padding: 6px 10px;
-  font-size: 0.75rem;
-}
-
-.btn-outline-primary:hover,
-.btn-outline-warning:hover,
-.btn-outline-danger:hover {
-  color: #fff;
+.form-label {
+  letter-spacing: 0.02em;
 }
 
 input.form-control,
-select.form-select {
-  border-radius: 8px;
+textarea.form-control {
+  box-shadow: none;
+  border: 1.5px solid #ced4da;
+  transition: border-color 0.3s ease;
+}
+
+input.form-control:focus,
+textarea.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 5px rgba(13, 110, 253, 0.25);
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.5em 1em;
 }
