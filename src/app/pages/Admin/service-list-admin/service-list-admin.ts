@@ -30,7 +30,14 @@ export class ServiceListAdmin implements OnInit {
   }
 
   loadServices(page: number = this.pageInfo.pageNumber): void {
-
+    this.saloon_Service.getServicesBySalon().subscribe({
+      next: (res:any) =>{
+        this.services = res;
+        this.cdr.detectChanges();
+      }, error:(err) => {
+        console.error('Error fetching saloons', err);
+      }
+    })
   }
 
   dissableEnableService(service: any) { }
