@@ -62,7 +62,7 @@ public class SaloonController {
 	}
 
 	@PutMapping("/{saloonId}")
-	@PreAuthorize("hasAnyAuthority('SUPER_ADMIN')")
+	@PreAuthorize("hasAnyAuthority('ADMIN','SUPER_ADMIN')")
 	public ResponseEntity<SalonResponseDTO> updateSaloon(@PathVariable UUID saloonId,
 			@RequestBody SaloonRequestDTO saloonRequestDTO) {
 		SalonResponseDTO response = saloonService.updateSaloon(saloonId, saloonRequestDTO);

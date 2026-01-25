@@ -233,10 +233,14 @@ public class AdminService {
 			firstName = parts[0];
 			if (parts.length > 1) {
 				lastName = String.join(" ", Arrays.copyOfRange(parts, 1, parts.length));
+			} else {
+				lastName = "$";
 			}
 		}
 		keycloakDto.setFirstName(firstName);
 		keycloakDto.setLastName(lastName);
+		keycloakDto.setEnabled(true);
+		keycloakDto.setPassword("Welcome@123");
 		Map<String, String> createdUser = createUser(keycloakDto, superAdminId, realm);
 
 		Salon salon = new Salon();
