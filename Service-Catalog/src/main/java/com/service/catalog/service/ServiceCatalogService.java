@@ -24,8 +24,8 @@ public class ServiceCatalogService {
 	private final SaloonServiceRepository saloonServiceRepository;
 	private final SaloonRepository saloonRepository;
 
-	public SaloonServiceDTO createService(CreateServiceDTO createServiceDTO, UUID salonId) {
-		Salon salon = saloonRepository.findById(salonId).orElseThrow(() -> new ValidationException("Salon not found"));
+	public SaloonServiceDTO createService(CreateServiceDTO createServiceDTO, String salonId) {
+		Salon salon = saloonRepository.findByCreatedBy(salonId).orElseThrow(() -> new ValidationException("Salon not found"));
 		SaloonService service = new SaloonService();
 		service.setName(createServiceDTO.getName());
 		service.setDescription(createServiceDTO.getDescription());
@@ -47,8 +47,8 @@ public class ServiceCatalogService {
 		return convertToDto(service);
 	}
 
-	public List<SaloonServiceDTO> getServicesBySalon(UUID salonId) {
-		Salon salon = saloonRepository.findById(salonId).orElseThrow(() -> new ValidationException("Salon not found"));
+	public List<SaloonServiceDTO> getServicesBySalon(String salonId) {
+		Salon salon = saloonRepository.findByCreatedBy(salonId).orElseThrow(() -> new ValidationException("Salon not found"));
 		return salon.getServices().stream().map(this::convertToDto).collect(Collectors.toList());
 	}
 

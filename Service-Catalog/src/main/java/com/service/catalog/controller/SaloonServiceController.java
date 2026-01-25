@@ -32,8 +32,7 @@ public class SaloonServiceController {
 	@PostMapping
 	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<SaloonServiceDTO> createSaloonService(@RequestBody CreateServiceDTO createServiceDTO) {
-		String saloonIdString = SecurityUtils.getCurrentUserIdSupplier.get();
-		UUID saloonId = UUID.fromString(saloonIdString);
+		String saloonId = SecurityUtils.getCurrentUserIdSupplier.get();
 		SaloonServiceDTO createSerivce = serviceCatalogService.createService(createServiceDTO, saloonId);
 		return ResponseEntity.ok(createSerivce);
 	}
@@ -49,9 +48,10 @@ public class SaloonServiceController {
 	}
 
 	@GetMapping("/salon")
+	@PreAuthorize("hasAnyAuthority('ADMIN')")
 	public ResponseEntity<List<SaloonServiceDTO>> getServicesBySalon() {
-		String salonIdsFormToken = SecurityUtils.getCurrentUserIdSupplier.get();
-		UUID salonId = UUID.fromString(salonIdsFormToken);
+		String salonId = SecurityUtils.getCurrentUserIdSupplier.get();
+//		UUID salonId = UUID.fromString(salonIdsFormToken);
 		return ResponseEntity.ok(serviceCatalogService.getServicesBySalon(salonId));
 	}
 
