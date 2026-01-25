@@ -31,10 +31,12 @@ import { EditUsermanagementBySuperAdmin } from './pages/Super_admin/edit-userman
 import { NavbarUser } from './pages/User/navbar-user/navbar-user';
 import { SaloonListComponent } from './pages/User/saloon-list-component/saloon-list-component';
 import { ServiceListComponent } from './pages/User/service-list-component/service-list-component';
+import { RegisterSaloon } from './HomePage/register-saloon/register-saloon';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
     { path: 'forget-password', component: ForgetPassword },
+    { path: 'register-saloon', component: RegisterSaloon },
     {
         path: 'super-admin-dashboard', component: SuperAdminRouterOutlet,
         children: [

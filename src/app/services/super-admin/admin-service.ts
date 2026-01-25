@@ -64,4 +64,14 @@ export class AdminService {
     const url = `${this.baseUrl}/createAdmin`;
     return this.http.post<{ [key: string]: string }>(url, adminRequestDto, { headers: this.getAuthHeaders() });
   }
+
+ /**
+ * Create a new salon signup request for admin approval
+ * @param realm The keycloak realm (e.g., "master" or your configured realm)
+ * @param dto SalonSignupRequestDTO containing the signup data
+ */
+  createRequestForAdminApproval(dto: SalonSignupRequestDTO): Observable<any> {
+    const url = `${this.baseUrl}/create-request-for-admin`;
+    return this.http.post<any>(url, dto);
+  }
 }

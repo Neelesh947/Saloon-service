@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .login-image {
+            background: url("https://w0.peakpx.com/wallpaper/880/714/HD-wallpaper-beauty-salon-women-beautician.jpg") center center / cover no-repeat;
+        }
+    </style>
+</head>
+
+<div class="bg-image">
+    <div class="bg-overlay"></div>
+
+    <div class="container d-flex justify-content-center align-items-center h-100">
+        <div class="form-container">
+
+            <h2>Register Your Salon</h2>
+
+            <form [formGroup]="registerForm" (ngSubmit)="registerSalon()">
+
+                <div class="mb-3">
+                    <input type="text" class="form-control" formControlName="ownerName" placeholder="Owner Name" />
+                    <div *ngIf="f['ownerName'].touched && f['ownerName'].invalid">
+                        Owner name is required.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <input type="email" class="form-control" formControlName="email" placeholder="Email" />
+                    <div *ngIf="f['email'].touched && f['email'].invalid" class="text-danger small">
+                        <div *ngIf="email?.errors?.['required']">Email is required.</div>
+                        <div *ngIf="email?.errors?.['email']">Invalid email format.</div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <input type="text" class="form-control" formControlName="mobile" placeholder="Mobile Number" />
+                    <div *ngIf="f['mobile'].touched && f['mobile'].invalid" class="text-danger small">
+                        Mobile is required.
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <input type="text" class="form-control" formControlName="salonName" placeholder="Salon Name" />
+                    <div *ngIf="f['salonName'].touched && f['salonName'].invalid" class="text-danger small">
+                        Salon name is required.
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-custom w-100" [disabled]="registerForm.invalid">
+                    Register
+                </button>
+
+            </form>
+
+        </div>
+    </div>
+</div>

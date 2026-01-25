@@ -1,0 +1,60 @@
+/* Full screen background */
+.bg-image {
+  background: url('https://w0.peakpx.com/wallpaper/880/714/HD-wallpaper-beauty-salon-women-beautician.jpg') center/cover no-repeat;
+  height: 100vh;
+  position: relative;
+}
+
+/* Dark overlay */
+.bg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Form styling */
+.form-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 450px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  color: #fff;
+
+  h2 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 18px;
+  }
+}
+
+/* Input style */
+.form-control {
+  background: rgba(255,255,255,0.6);
+  border: none;
+  border-radius: 7px;
+}
+
+.form-control:focus {
+  background: rgba(255,255,255,0.85);
+  box-shadow: none;
+}
+
+/* Button colors */
+.btn-custom {
+  background-color: #ff4081;
+  color: white;
+  font-weight: bold;
+  border-radius: 6px;
+}
+
+.btn-custom:hover {
+  background-color: #e50063;
+}
