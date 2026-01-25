@@ -11,7 +11,7 @@ public class StaffRequestDTO {
 	private String username;
 	private String firstName;
 	private String lastName;
-	private boolean enable;
+	private boolean enabled;
 	private String emailAddress;
 	private String phone;
 	/**

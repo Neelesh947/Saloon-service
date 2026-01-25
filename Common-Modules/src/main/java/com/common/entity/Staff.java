@@ -28,10 +28,10 @@ public class Staff extends BaseEntity {
     @Column
     private String phone;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String createdBy;
     
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String keycloakUserId;
 
     // List of service IDs provided by this staff (microservice-friendly)
