@@ -258,8 +258,8 @@ public class KeycloakService {
 	public final TriFunction<String, String, String, List<UserRepresentation>> userByPhoneAndRole = (phone, role,
 			realm) -> {
 		String url = MessageFormat.format(keycloakProperties.getUserByPhone(), realm, phone);
-		return keycloakHandler.userDataDetails.apply(url).stream()
-				.filter(user -> user.getAttributes() != null && user.getAttributes().get("roles").contains(role))
+		return keycloakHandler.userDataDetails.apply(url).stream().filter(user -> user.getAttributes() != null
+				&& user.getAttributes().get("roles") != null && user.getAttributes().get("roles").contains(role))
 				.toList();
 	};
 

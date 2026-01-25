@@ -47,8 +47,12 @@ public class StaffService {
 	}
 
 	private void validateStaffDto(StaffRequestDTO staffDto, String realm) {
-		if (ObjectUtils.isEmpty(staffDto.getName()))
-			throw new ValidationException("Name required");
+		if (ObjectUtils.isEmpty(staffDto.getFirstName()))
+			throw new ValidationException("First Name required");
+		if (ObjectUtils.isEmpty(staffDto.getLastName()))
+			throw new ValidationException("Last Name required");
+		if (ObjectUtils.isEmpty(staffDto.getUsername()))
+			throw new ValidationException("UserName required");
 		if (ObjectUtils.isEmpty(staffDto.getEmail()))
 			throw new ValidationException("Email required");
 
@@ -98,6 +102,7 @@ public class StaffService {
 		dto.setPhone(user.getAttributes() != null && user.getAttributes().containsKey("phone")
 				? user.getAttributes().get("phone").get(0)
 				: null);
+		dto.setEnable(user.isEnabled());
 
 		List<String> serviceIdsStr = CollectionUtils
 				.isEmpty(user.getAttributes() != null ? user.getAttributes().get("serviceIds") : null) ? List.of()
@@ -128,8 +133,10 @@ public class StaffService {
 			validateServiceIds(dto.getServiceIds());
 
 		// Update fields
-		if (dto.getName() != null)
-			user.setFirstName(dto.getName());
+		if (dto.getFirstName() != null)
+			user.setFirstName(dto.getFirstName());
+		if (dto.getLastName() != null)
+			user.setLastName(dto.getLastName());
 		if (dto.getEmail() != null)
 			user.setEmail(dto.getEmail());
 

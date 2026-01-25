@@ -9,7 +9,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StaffRequestDTO {
-	private String name;
+	private String username;
+	private String firstName;
+	private String lastName;
+	private boolean enable;
 	private String email;
 	private String phone;
 	/**
