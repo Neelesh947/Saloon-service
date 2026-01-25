@@ -8,9 +8,10 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-salon-management',
+  standalone: true,
   imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './salon-management.html',
-  styleUrl: './salon-management.scss',
+  styleUrls: ['./salon-management.scss'],
 })
 export class SalonManagement implements OnInit {
   saloons: SalonResponseDTO[] = [];

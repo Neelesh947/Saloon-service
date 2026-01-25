@@ -11,7 +11,6 @@ import { UserManagementBySuperAdmin } from './pages/Super_admin/user-management-
 import { NavbarAdmin } from './pages/Admin/navbar-admin/navbar-admin';
 import { SaloonListAdmin } from './pages/Admin/saloon-list-admin/saloon-list-admin';
 import { EditSaloonByAdmin } from './pages/Admin/edit-saloon-by-admin/edit-saloon-by-admin';
-import { AddSaloonByAdmin } from './pages/Admin/add-saloon-by-admin/add-saloon-by-admin';
 import { ServiceListAdmin } from './pages/Admin/service-list-admin/service-list-admin';
 import { AddServiceListAdmin } from './pages/Admin/add-service-list-admin/add-service-list-admin';
 import { EditServiceListAdmin } from './pages/Admin/edit-service-list-admin/edit-service-list-admin';
@@ -52,7 +51,6 @@ export const routes: Routes = [
             { path: '', component: NavbarAdmin },
             { path: 'saloon-list-by-admin', component: SaloonListAdmin },
             { path: 'edit-saloon-by-admin', component: EditSaloonByAdmin },
-            { path: 'add-saloon-by-admin', component: AddSaloonByAdmin },
             { path: 'serivce-list-by-admin', component: ServiceListAdmin },
             { path: 'add-service-list-by-admin', component: AddServiceListAdmin },
             { path: 'edit-service-list-by-admin', component: EditServiceListAdmin },
