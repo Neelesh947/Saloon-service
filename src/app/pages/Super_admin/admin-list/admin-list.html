@@ -61,12 +61,12 @@
                             <!-- Approve / Reject Buttons -->
                             <td class="text-center">
                                 <button *ngIf="statusFilter === 'PENDING'" class="btn btn-sm btn-success me-1"
-                                    title="Approve Request" (click)="approveRequest(request.id)">
+                                    title="Approve Request" (click)="approveRequest(request.id!)">
                                     Approve
                                 </button>
 
                                 <button *ngIf="statusFilter === 'PENDING'" class="btn btn-sm btn-danger"
-                                    title="Reject Request" (click)="rejectRequest(request.id)">
+                                    title="Reject Request" (click)="rejectRequest(request.id!)">
                                     Reject
                                 </button>
                                 <span *ngIf="statusFilter !== 'PENDING'" class="badge" [ngClass]="{

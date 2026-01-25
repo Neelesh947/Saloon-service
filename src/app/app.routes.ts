@@ -27,6 +27,7 @@ import { ServiceListComponent } from './pages/User/service-list-component/servic
 import { RegisterSaloon } from './HomePage/register-saloon/register-saloon';
 import { CreateAccount } from './HomePage/create-account/create-account';
 import { AboutUs } from './HomePage/about-us/about-us';
+import { SalonManagement } from './pages/Super_admin/salon-management/salon-management';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
@@ -38,6 +39,7 @@ export const routes: Routes = [
         path: 'super-admin-dashboard', component: SuperAdminRouterOutlet,
         children: [
             { path: '', component: Navbar },
+            { path: 'saloon-management', component: SalonManagement },
             { path: 'super-admin-analytics', component: AnalyticsDashboardSuperAdmin },
             { path: 'user-management', component: UserManagementBySuperAdmin },
             { path: 'edit-user-management/:id', component: EditUsermanagementBySuperAdmin },

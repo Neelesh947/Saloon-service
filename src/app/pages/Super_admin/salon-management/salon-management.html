@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Saloon-List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<div class="container-fluid mt-4">
+
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold">Saloon List</h4>
+    <button class="btn btn-primary" [routerLink]="['/super-admin-dashboard/add-saloon-management-admin']">
+      <i class="bi bi-plus-circle me-1"></i> Add New Saloon
+    </button>
+  </div>
+
+  <!-- Card Wrapper -->
+  <div class="card shadow-sm">
+    <div class="card-body">
+
+      <!-- Filters -->
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <input type="text" class="form-control" placeholder="Search by Saloon Name..." />
+        </div>
+
+        <div class="col-md-3">
+          <select class="form-select" [(ngModel)]="statusFilter" (change)="onStatusChange()">
+            <option value="">All Status</option>
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Saloon Table -->
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Saloon Name</th>
+              <th>Address</th>
+              <th>Phone</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th class="text-center">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr *ngFor="let saloon of saloons; let i = index">
+              <td>{{ i + 1 }}</td>
+
+              <td class="fw-semibold" [routerLink]="['/super-admin-dashboard/edit-saloon-management-admin', saloon.id]">
+                {{ saloon.saloonName }}
+              </td>
+
+              <td class="text-muted">
+                {{ saloon.address }}
+              </td>
+
+              <td>
+                {{ saloon.phone }}
+              </td>
+
+              <td>
+                <span class="badge" [ngClass]="saloon.active ? 'bg-success' : 'bg-danger'">
+                  {{ saloon.active ? 'Active' : 'Inactive' }}
+                </span>
+              </td>
+
+              <td>
+                {{ saloon.createdAt | date:'mediumDate' }}
+              </td>
+
+              <td class="text-center">
+                <button class="btn btn-sm btn-outline-primary me-1" title="Edit User"
+                  [routerLink]="['/super-admin-dashboard/edit-saloon-management-admin', saloon.id]">
+                  <i class="bi bi-eye"></i>
+                </button>
+
+                <button class="btn btn-sm me-1"
+                  [ngClass]="saloon.active ? 'btn-outline-warning' : 'btn-outline-success'"
+                  [title]="saloon.active ? 'Inactivate User' : 'Activate User'" (click)="dissableEnableUser(saloon)">
+                  <i class="bi" [ngClass]="saloon.active ? 'bi-slash-circle' : 'bi-check-circle'"></i>
+                </button>
+
+
+                <button class="btn btn-sm btn-outline-danger" title="Delete User" (click)="deleteUser(saloon)">
+                  <i class="bi bi-slash-circle"></i>
+                </button>
+              </td>
+            </tr>
+
+            <!-- Empty State -->
+            <tr *ngIf="saloons.length === 0">
+              <td colspan="7" class="text-center text-muted py-4">
+                No saloons found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="d-flex justify-content-between align-items-center mt-3">
+        <span class="text-muted">
+          Showing {{ pageInfo.pageSize }} of {{ pageInfo.totalElements }} saloons
+        </span>
+
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="isFirstPage">
+              <a class="page-link" href="javascript:void(0)" (click)="goToPreviousPage()">Previous</a>
+            </li>
+
+            <li class="page-item active">
+              <a class="page-link" href="javascript:void(0)">{{ pageInfo.pageNumber + 1 }}</a>
+            </li>
+
+            <li class="page-item" [class.disabled]="isLastPage">
+              <a class="page-link" href="javascript:void(0)" (click)="goToNextPage()">Next</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
