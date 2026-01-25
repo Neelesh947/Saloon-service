@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.keycloak.representations.idm.UserRepresentation;
@@ -17,9 +16,11 @@ import com.common.dto.PaginatedResponse;
 import com.common.dto.StaffRequestDTO;
 import com.common.dto.StaffResponseDTO;
 import com.common.entity.AdminAndStaffMapping;
+import com.common.entity.Staff;
 import com.common.utils.KeycloakUtility;
 import com.exception.handling.models.ValidationException;
 import com.service.catalog.repository.AdminAndStaffMappingRepository;
+import com.service.catalog.repository.StaffRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,6 +32,7 @@ public class StaffService {
 
 	private final KeycloakUtility keycloakUtility;
 	private final AdminAndStaffMappingRepository mappingRepository;
+	private final StaffRepository staffRepository;
 
 	@Transactional
 	public Map<String, String> createStaff(StaffRequestDTO staffDto, String adminId, String realm) {
@@ -41,9 +43,25 @@ public class StaffService {
 		mapping.setLinkedAdminId(adminId);
 		mapping.setLinkedStaffId(staffKeycloakId);
 		mappingRepository.save(mapping);
+		mapUserInDb(response, staffDto, adminId);
 		response.put("status", "success");
 		response.put("message", "Staff created successfully");
 		return response;
+	}
+
+	@Transactional
+	private void mapUserInDb(Map<String, String> response, StaffRequestDTO dto, String adminId) {
+		Staff staff = new Staff();
+		staff.setCreatedBy(adminId);
+		staff.setEmail(dto.getEmailAddress());
+		staff.setKeycloakUserId(response.get("userId"));
+		staff.setName(dto.getFirstName() + " " + dto.getLastName());
+		staff.setPhone(dto.getPhone());
+		if (dto.getServiceIds() != null && !dto.getServiceIds().isEmpty()) {
+			List<String> serviceUuids = dto.getServiceIds();
+			staff.setServiceIds(serviceUuids);
+		}
+		staffRepository.save(staff);
 	}
 
 	private void validateStaffDto(StaffRequestDTO staffDto, String realm) {
@@ -53,10 +71,10 @@ public class StaffService {
 			throw new ValidationException("Last Name required");
 		if (ObjectUtils.isEmpty(staffDto.getUsername()))
 			throw new ValidationException("UserName required");
-		if (ObjectUtils.isEmpty(staffDto.getEmail()))
+		if (ObjectUtils.isEmpty(staffDto.getEmailAddress()))
 			throw new ValidationException("Email required");
 
-		List<UserRepresentation> users = keycloakUtility.userByEmailAndRole(staffDto.getEmail(), "STAFF", realm);
+		List<UserRepresentation> users = keycloakUtility.userByEmailAndRole(staffDto.getEmailAddress(), "STAFF", realm);
 		if (!CollectionUtils.isEmpty(users))
 			throw new ValidationException("Email already exists");
 
@@ -137,14 +155,14 @@ public class StaffService {
 			user.setFirstName(dto.getFirstName());
 		if (dto.getLastName() != null)
 			user.setLastName(dto.getLastName());
-		if (dto.getEmail() != null)
-			user.setEmail(dto.getEmail());
+		if (dto.getEmailAddress() != null)
+			user.setEmail(dto.getEmailAddress());
 
 		Map<String, List<String>> attributes = user.getAttributes() != null ? user.getAttributes() : new HashMap<>();
 		if (dto.getPhone() != null)
 			attributes.put("phone", List.of(dto.getPhone()));
 		if (!CollectionUtils.isEmpty(dto.getServiceIds()))
-			attributes.put("serviceIds", dto.getServiceIds().stream().map(UUID::toString).toList());
+			attributes.put("serviceIds", dto.getServiceIds());
 		user.setAttributes(attributes);
 
 		keycloakUtility.updateUser(user, staffId, realm);
@@ -161,7 +179,7 @@ public class StaffService {
 		keycloakUtility.updateUser(user, staffId, realm);
 	}
 
-	private void validateServiceIds(List<UUID> serviceIds) {
+	private void validateServiceIds(List<String> serviceIds) {
 		if (serviceIds == null || serviceIds.isEmpty())
 			return;
 	}

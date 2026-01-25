@@ -1,15 +1,22 @@
 package com.common.entity;
 
 import java.util.List;
-import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "staff")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Staff extends BaseEntity {
 
     @Column(nullable = false)
@@ -23,6 +30,9 @@ public class Staff extends BaseEntity {
 
     @Column(nullable = false, unique = true)
     private String createdBy;
+    
+    @Column(nullable = false, unique = true)
+    private String keycloakUserId;
 
     // List of service IDs provided by this staff (microservice-friendly)
     /**
@@ -31,5 +41,5 @@ public class Staff extends BaseEntity {
      */
     @ElementCollection
     @Column(name = "service_id")
-    private List<UUID> serviceIds;
+    private List<String> serviceIds;
 }
