@@ -2,8 +2,8 @@ export interface StaffRequestDTO {
     username: string;
     firstName: string;
     lastName: string;
-    enable: boolean;
-    email: string;
+    enabled: boolean;
+    emailAddress: string;
     phone: string;
     serviceIds?: string[];
 }

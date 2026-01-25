@@ -33,7 +33,8 @@ export class AddStaffByAdmin implements OnInit {
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       username: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      enabled: ['', Validators.required],
+      emailAddress: ['', [Validators.required, Validators.email]],
       phone: ['', Validators.required],
       serviceIds: [[]]
     });
