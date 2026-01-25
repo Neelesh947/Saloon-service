@@ -204,17 +204,18 @@ public class AdminService {
 		if (Boolean.TRUE.equals(dto.getApproved())) {
 			approveRequest(request, realm, superAdminId, dto.getRemarks());
 		} else {
-			rejectRequest(request, dto.getRemarks(), superAdminId);
+			rejectRequest(request, dto.getRemarks(), superAdminId, realm);
 		}
 	}
 
 	@Transactional
-	private void rejectRequest(SalonSignupRequest request, String remarks, String superAdminId) {
+	private void rejectRequest(SalonSignupRequest request, String remarks, String superAdminId, String realm) {
 		if (remarks == null || remarks.isBlank()) {
 			throw new ValidationException("Remarks are required for rejection");
 		}
 		request.setStatus(RequestStatus.REJECTED);
-		request.setRemarks(request.getRemarks());
+		request.setRemarks(remarks);
+		request.setRealm(realm);
 		request.setReviewedBy(superAdminId);
 		request.setReviewedAt(LocalDateTime.now());
 		salonSignupRequestRepository.save(request);
