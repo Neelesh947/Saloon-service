@@ -79,19 +79,19 @@
               </td>
 
               <td class="text-center">
-                <button class="btn btn-sm btn-outline-primary me-1" title="Edit User"
+                <button class="btn btn-sm btn-outline-primary me-1" title="Edit Staff"
                   [routerLink]="['/super-admin-dashboard/edit-staff-by-admin', staff.keycloakUserId]">
                   <i class="bi bi-eye"></i>
                 </button>
 
                 <button class="btn btn-sm me-1"
-                  [ngClass]="staff.enable ? 'btn-outline-warning' : 'btn-outline-success'"
-                  [title]="staff.enable ? 'Inactivate User' : 'Activate User'" (click)="dissableEnableService(staff)">
-                  <i class="bi" [ngClass]="staff.enable ? 'bi-slash-circle' : 'bi-check-circle'"></i>
+                  [ngClass]="staff.enabled ? 'btn-outline-warning' : 'btn-outline-success'"
+                  [title]="staff.enabled ? 'Inactivate Staff' : 'Activate Staff'" (click)="dissableEnableService(staff)">
+                  <i class="bi" [ngClass]="staff.enabled ? 'bi-slash-circle' : 'bi-check-circle'"></i>
                 </button>
 
 
-                <button class="btn btn-sm btn-outline-danger" title="Delete User" (click)="deleteService(staff)">
+                <button class="btn btn-sm btn-outline-danger" title="Delete Staff" (click)="deleteService(staff)">
                   <i class="bi bi-slash-circle"></i>
                 </button>
               </td>

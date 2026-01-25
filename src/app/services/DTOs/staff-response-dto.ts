@@ -7,5 +7,5 @@ export interface StaffResponseDTO {
     phone: string;
     keycloakUserId: string;
     serviceIds: string[];
-    enable: boolean;
+    enabled: boolean;
 }

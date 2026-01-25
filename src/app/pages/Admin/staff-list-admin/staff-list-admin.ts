@@ -33,7 +33,7 @@ export class StaffListAdmin {
     const isEnabled = this.getIsEnabledFromFilter();
     this.staff_service.getListOfStaffToAdmin(isEnabled, page, this.pageInfo.pageSize).subscribe({
       next: (res: any) => {
-        this.staffs = res;
+        this.staffs = res.content;
         this.cdr.detectChanges();
       }, error: (err) => {
         console.error('Error fetching saloons', err);
