@@ -31,6 +31,8 @@ public class Staff extends BaseEntity {
     @Column(nullable = false)
     private String createdBy;
     
+    private boolean enabled;
+    
     @Column(nullable = false)
     private String keycloakUserId;
 

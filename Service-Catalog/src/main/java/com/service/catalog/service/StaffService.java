@@ -1,6 +1,5 @@
 package com.service.catalog.service;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,23 +93,38 @@ public class StaffService {
 		int page = allParams.containsKey("page") ? Integer.parseInt(allParams.get("page").toString()) : 0;
 		int size = allParams.containsKey("size") ? Integer.parseInt(allParams.get("size").toString()) : 10;
 
-		List<UserRepresentation> staffUsers = keycloakUtility.allUsersOfSpecificRoleAndRealm(STAFF_ROLE, allParams,
-				realm);
-		if ("TRUE".equals(isEnabled)) {
-			staffUsers = staffUsers.stream().filter(UserRepresentation::isEnabled).toList();
-		} else if ("FALSE".equals(isEnabled)) {
-			staffUsers = staffUsers.stream().filter(u -> !u.isEnabled()).toList();
-		}
-		staffUsers = staffUsers.stream().sorted(Comparator
-				.comparing(UserRepresentation::getCreatedTimestamp, Comparator.nullsLast(Long::compareTo)).reversed())
-				.toList();
-		int fromIndex = Math.min(page * size, staffUsers.size());
-		int toIndex = Math.min(fromIndex + size, staffUsers.size());
-		List<UserRepresentation> paginatedUsers = staffUsers.subList(fromIndex, toIndex);
-		List<StaffResponseDTO> staffDTOs = paginatedUsers.stream().map(this::mapToDto).collect(Collectors.toList());
+		List<Staff> staffList = staffRepository.findByCreatedBy(adminId);
+		List<Staff> filteredStaff = staffList.stream().filter(staff -> {
+			if ("TRUE".equals(isEnabled)) {
+				return staff.isEnabled();
+			} else if ("FALSE".equals(isEnabled)) {
+				return !staff.isEnabled();
+			} else {
+				return true; // ALL
+			}
+		}).collect(Collectors.toList());
+		int fromIndex = Math.min(page * size, filteredStaff.size());
+		int toIndex = Math.min(fromIndex + size, filteredStaff.size());
+		List<Staff> paginatedStaff = filteredStaff.subList(fromIndex, toIndex);
+		List<StaffResponseDTO> staffDTOs = paginatedStaff.stream().map(this::mapToDtoStaff).collect(Collectors.toList());
 
-		return new PaginatedResponse<>(staffDTOs, staffUsers.size(), page, size);
+		return new PaginatedResponse<>(staffDTOs, filteredStaff.size(), page, size);
 	}
+
+	private StaffResponseDTO mapToDtoStaff(Staff staff) {
+		    StaffResponseDTO dto = new StaffResponseDTO();
+		    dto.setId(staff.getId());
+		    dto.setCreatedAt(staff.getCreatedAt());
+		    dto.setUpdatedAt(staff.getUpdatedAt());
+		    dto.setName(staff.getName());
+		    dto.setEmail(staff.getEmail());
+		    dto.setPhone(staff.getPhone());
+		    dto.setKeycloakUserId(staff.getKeycloakUserId());
+		    dto.setEnabled(staff.isEnabled());
+		    if (staff.getServiceIds() != null) {
+		        dto.setServiceIds(staff.getServiceIds());
+		    }
+		    return dto;	}
 
 	private StaffResponseDTO mapToDto(UserRepresentation user) {
 		StaffResponseDTO dto = new StaffResponseDTO();
@@ -120,15 +134,12 @@ public class StaffService {
 		dto.setPhone(user.getAttributes() != null && user.getAttributes().containsKey("phone")
 				? user.getAttributes().get("phone").get(0)
 				: null);
-		dto.setEnable(user.isEnabled());
+		dto.setEnabled(user.isEnabled());
 
 		List<String> serviceIdsStr = CollectionUtils
 				.isEmpty(user.getAttributes() != null ? user.getAttributes().get("serviceIds") : null) ? List.of()
 						: user.getAttributes().get("serviceIds");
-
-		List<java.util.UUID> serviceIds = serviceIdsStr.stream().map(java.util.UUID::fromString)
-				.collect(Collectors.toList());
-		dto.setServiceIds(serviceIds);
+		dto.setServiceIds(serviceIdsStr);
 
 		return dto;
 	}

@@ -1,5 +1,6 @@
 package com.service.catalog.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -9,5 +10,7 @@ import com.common.entity.Staff;
 
 @Repository
 public interface StaffRepository extends JpaRepository<Staff, UUID>{
+
+	List<Staff> findByCreatedBy(String adminId);
 
 }
