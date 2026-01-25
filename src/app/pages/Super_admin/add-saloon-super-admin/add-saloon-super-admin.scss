@@ -1,18 +1,15 @@
+/* Optional: small padding for card */
 .card {
-  border-radius: 0.5rem;
+  border-radius: 0.75rem;
 }
 
-.card-header {
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-input.ng-touched.ng-invalid,
-textarea.ng-touched.ng-invalid {
+/* Optional: highlight invalid fields */
+input.ng-invalid.ng-touched,
+textarea.ng-invalid.ng-touched {
   border-color: #dc3545;
 }
 
-input.ng-touched.ng-valid,
-textarea.ng-touched.ng-valid {
-  border-color: #28a745;
+/* Optional: success color */
+input.ng-valid.ng-touched {
+  border-color: #198754;
 }

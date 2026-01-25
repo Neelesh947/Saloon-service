@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-saloon-managements',
-  imports: [FormsModule, CommonModule, RouterModule, NgIf],
+  imports: [FormsModule, CommonModule, RouterModule],
   templateUrl: './saloon-managements.html',
   styleUrl: './saloon-managements.scss',
 })
