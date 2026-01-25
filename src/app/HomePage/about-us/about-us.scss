@@ -1,0 +1,52 @@
+/* Navbar */
+.navbar-brand {
+  font-size: 1.6rem;
+  color: #0d6efd;
+  font-weight: 700;
+}
+
+/* Hero Background */
+.about-bg {
+  background-image: url('https://www.rimsindia.in/wp-content/uploads/2025/01/How-to-Maintain-Your-Salon-Furniture-for-Long-Lasting-Use.webp');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.about-bg .overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.min-vh-60 {
+  min-height: 60vh;
+}
+
+/* Feature Cards */
+.feature-card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-6px);
+}
+
+.feature-icon {
+  font-size: 40px;
+  color: #0d6efd;
+}
+
+/* Mission */
+.mission-text {
+  max-width: 700px;
+  font-size: 1.1rem;
+}
+
+/* Buttons icons margin */
+.btn i {
+  margin-left: 6px;
+}

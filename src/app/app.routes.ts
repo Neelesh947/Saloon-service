@@ -32,11 +32,15 @@ import { NavbarUser } from './pages/User/navbar-user/navbar-user';
 import { SaloonListComponent } from './pages/User/saloon-list-component/saloon-list-component';
 import { ServiceListComponent } from './pages/User/service-list-component/service-list-component';
 import { RegisterSaloon } from './HomePage/register-saloon/register-saloon';
+import { CreateAccount } from './HomePage/create-account/create-account';
+import { AboutUs } from './HomePage/about-us/about-us';
 
 export const routes: Routes = [
     { path: '', component: LoginPages },
     { path: 'forget-password', component: ForgetPassword },
     { path: 'register-saloon', component: RegisterSaloon },
+    { path: 'create-user', component: CreateAccount },
+    { path: 'about-us', component: AboutUs },
     {
         path: 'super-admin-dashboard', component: SuperAdminRouterOutlet,
         children: [
