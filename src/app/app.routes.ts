@@ -6,13 +6,8 @@ import { StaffDashboard } from './pages/Staff/staff-dashboard/staff-dashboard';
 import { UserDashboard } from './pages/User/user-dashboard/user-dashboard';
 import { SuperAdminRouterOutlet } from './pages/Super_admin/super-admin-router-outlet/super-admin-router-outlet';
 import { Navbar } from './pages/Super_admin/navbar/navbar';
-import { SaloonManagements } from './pages/Super_admin/saloon-managements/saloon-managements';
 import { AnalyticsDashboardSuperAdmin } from './pages/Super_admin/analytics-dashboard-super-admin/analytics-dashboard-super-admin';
 import { UserManagementBySuperAdmin } from './pages/Super_admin/user-management-by-super-admin/user-management-by-super-admin';
-import { StaffmanagementBySuperAdmin } from './pages/Super_admin/staffmanagement-by-super-admin/staffmanagement-by-super-admin';
-import { ServiceManagementBySuperAdmin } from './pages/Super_admin/service-management-by-super-admin/service-management-by-super-admin';
-import { EditSaloonSuperAdmin } from './pages/Super_admin/edit-saloon-super-admin/edit-saloon-super-admin';
-import { AddSaloonSuperAdmin } from './pages/Super_admin/add-saloon-super-admin/add-saloon-super-admin';
 import { NavbarAdmin } from './pages/Admin/navbar-admin/navbar-admin';
 import { SaloonListAdmin } from './pages/Admin/saloon-list-admin/saloon-list-admin';
 import { EditSaloonByAdmin } from './pages/Admin/edit-saloon-by-admin/edit-saloon-by-admin';
@@ -25,8 +20,6 @@ import { AddStaffByAdmin } from './pages/Admin/add-staff-by-admin/add-staff-by-a
 import { EditEmployeeByAdmin } from './pages/Admin/edit-employee-by-admin/edit-employee-by-admin';
 import { AdminAnalytics } from './pages/Admin/admin-analytics/admin-analytics';
 import { AdminList } from './pages/Super_admin/admin-list/admin-list';
-import { CreateAdmin } from './pages/Super_admin/create-admin/create-admin';
-import { EditAdmin } from './pages/Super_admin/edit-admin/edit-admin';
 import { EditUsermanagementBySuperAdmin } from './pages/Super_admin/edit-usermanagement-by-super-admin/edit-usermanagement-by-super-admin';
 import { NavbarUser } from './pages/User/navbar-user/navbar-user';
 import { SaloonListComponent } from './pages/User/saloon-list-component/saloon-list-component';
@@ -45,17 +38,10 @@ export const routes: Routes = [
         path: 'super-admin-dashboard', component: SuperAdminRouterOutlet,
         children: [
             { path: '', component: Navbar },
-            { path: 'saloon-management-admin', component: SaloonManagements },
-            { path: 'add-saloon-management-admin', component: AddSaloonSuperAdmin },
-            { path: 'edit-saloon-management-admin/:id', component: EditSaloonSuperAdmin },
             { path: 'super-admin-analytics', component: AnalyticsDashboardSuperAdmin },
             { path: 'user-management', component: UserManagementBySuperAdmin },
             { path: 'edit-user-management/:id', component: EditUsermanagementBySuperAdmin },
-            { path: 'staff-management', component: StaffmanagementBySuperAdmin },
-            { path: 'serivce-management', component: ServiceManagementBySuperAdmin },
             { path: 'admin-list', component: AdminList },
-            { path: 'add-admin', component: CreateAdmin },
-            { path: 'edit-admin', component: EditAdmin }
         ]
     },
     {
