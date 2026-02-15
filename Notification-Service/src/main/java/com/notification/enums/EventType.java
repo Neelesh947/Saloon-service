@@ -1,0 +1,5 @@
+package com.notification.enums;
+
+public enum EventType {
+	BOOKING_CONFIRMATION, REMINDER, OTP, PASSWORD_RESET, PAYMENT_CONFIRMATION, REFUND, PROMOTION, CUSTOM
+}

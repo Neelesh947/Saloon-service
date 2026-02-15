@@ -13,4 +13,6 @@ public interface StaffRepository extends JpaRepository<Staff, UUID>{
 
 	List<Staff> findByCreatedBy(String adminId);
 
+	Staff findByKeycloakUserId(String staffId);
+
 }
