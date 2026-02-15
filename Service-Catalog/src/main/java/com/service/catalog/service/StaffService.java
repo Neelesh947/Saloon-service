@@ -112,20 +112,19 @@ public class StaffService {
 	}
 
 	private StaffResponseDTO mapToDtoStaff(Staff staff) {
-		StaffResponseDTO dto = new StaffResponseDTO();
-		dto.setId(staff.getId());
-		dto.setCreatedAt(staff.getCreatedAt());
-		dto.setUpdatedAt(staff.getUpdatedAt());
-		dto.setName(staff.getName());
-		dto.setEmail(staff.getEmail());
-		dto.setPhone(staff.getPhone());
-		dto.setKeycloakUserId(staff.getKeycloakUserId());
-		dto.setEnabled(staff.isEnabled());
-		if (staff.getServiceIds() != null) {
-			dto.setServiceIds(staff.getServiceIds());
-		}
-		return dto;
-	}
+		    StaffResponseDTO dto = new StaffResponseDTO();
+		    dto.setId(staff.getId());
+		    dto.setCreatedAt(staff.getCreatedAt());
+		    dto.setUpdatedAt(staff.getUpdatedAt());
+		    dto.setName(staff.getName());
+		    dto.setEmail(staff.getEmail());
+		    dto.setPhone(staff.getPhone());
+		    dto.setKeycloakUserId(staff.getKeycloakUserId());
+		    dto.setEnabled(staff.isEnabled());
+		    if (staff.getServiceIds() != null) {
+		        dto.setServiceIds(staff.getServiceIds());
+		    }
+		    return dto;	}
 
 	private StaffResponseDTO mapToDto(UserRepresentation user) {
 		StaffResponseDTO dto = new StaffResponseDTO();
@@ -146,28 +145,10 @@ public class StaffService {
 	}
 
 	public StaffResponseDTO getStaffById(String staffId, String realm) {
-        UserRepresentation user = keycloakUtility.userById(staffId, realm);
-		Staff staff = staffRepository.findByKeycloakUserId(staffId);
-		if (staff == null)
+		UserRepresentation user = keycloakUtility.userById(staffId, realm);
+		if (user == null)
 			throw new ValidationException("Staff not found");
-		return mapToDtoStaffForGetByID(staff, user);
-	}
-
-	private StaffResponseDTO mapToDtoStaffForGetByID(Staff staff, UserRepresentation user) {
-		StaffResponseDTO dto = new StaffResponseDTO();
-		dto.setId(staff.getId());
-		dto.setCreatedAt(staff.getCreatedAt());
-		dto.setUpdatedAt(staff.getUpdatedAt());
-		dto.setName(staff.getName());
-		dto.setEmail(staff.getEmail());
-		dto.setPhone(staff.getPhone());
-		dto.setKeycloakUserId(staff.getKeycloakUserId());
-		dto.setEnabled(staff.isEnabled());
-		if (staff.getServiceIds() != null) {
-			dto.setServiceIds(staff.getServiceIds());
-		}
-		dto.setUsername(user.getUsername());
-		return dto;
+		return mapToDto(user);
 	}
 
 	public StaffResponseDTO updateStaff(String staffId, StaffRequestDTO dto, String realm) {

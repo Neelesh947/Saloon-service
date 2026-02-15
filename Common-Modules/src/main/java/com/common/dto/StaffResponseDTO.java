@@ -17,7 +17,6 @@ public class StaffResponseDTO extends BaseResponseDTO {
 	private String phone;
 	private String keycloakUserId;
 	private boolean enabled;
-	private String username;
 	/**
 	 * List of service IDs assigned to this staff
 	 */
